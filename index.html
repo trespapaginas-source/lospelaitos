@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabaña Los Pelaitos | Refugio Natural</title>
     
-    <!-- 1. TAILWIND CSS (Diseño) -->
+    <!-- 1. TAILWIND CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. FLATPICKR (Calendario) -->
+    <!-- 2. FLATPICKR -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 
-    <!-- 3. CONFIGURACIÓN DE ESTILOS -->
+    <!-- 3. CONFIGURACIÓN -->
     <script>
         tailwind.config = {
             theme: {
@@ -23,11 +23,21 @@
                         serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        emerald: {
-                            950: '#022c22',
+                        emerald: { 950: '#022c22' },
+                        gold: { 500: '#d4af37' }
+                    },
+                    animation: {
+                        'breathe': 'breathe 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        breathe: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
                         },
-                        gold: {
-                            500: '#d4af37',
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -35,168 +45,91 @@
         }
     </script>
 
-    <!-- 4. ICONOS LUCIDE -->
+    <!-- 4. ICONOS -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Estilos base */
         ::selection { background-color: #a7f3d0; color: #022c22; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f5f5f4; }
         ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 4px; }
         
-        /* Utilidades para inputs de fecha */
-        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
-        
-        /* Animaciones */
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Animación 360 */
-        .spin-slow { animation: spin 8s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Estilos Calendario */
         .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
             background: #022c22 !important; border-color: #022c22 !important;
         }
-        /* Días bloqueados (Google Calendar) */
         .flatpickr-day.disabled { background: #f3f4f6; color: #cbd5e1; text-decoration: line-through; cursor: not-allowed; }
+        .spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
     
     <!-- FUENTES -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-200 selection:text-emerald-950">
 
     <!-- NAVBAR -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-6 bg-transparent">
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-4 bg-transparent">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <!-- LOGO SVG -->
             <a href="#" class="cursor-pointer group">
-                <svg viewBox="0 0 300 180" class="h-12 w-auto transition-colors duration-300" id="brand-logo" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path id="logo-frame" d="M150,40 L220,100 L80,100 Z" stroke="white" stroke-width="2.5" fill="none" />
-                    <path id="logo-fill" d="M150,55 L200,98 L100,98 Z" fill="white" opacity="0.8" />
-                    <rect id="logo-door" x="142" y="80" width="16" height="18" fill="#022c22" rx="1" />
-                    <path d="M60,100 L75,70 L90,100" class="fill-emerald-200" opacity="0.6"/>
-                    <path d="M210,100 L225,70 L240,100" class="fill-emerald-200" opacity="0.6"/>
-                    <text id="logo-text" x="150" y="140" text-anchor="middle" font-family="Playfair Display" font-weight="400" font-size="32" fill="white" letter-spacing="4">LOS PELAITOS</text>
-                    <text id="logo-sub" x="150" y="158" text-anchor="middle" font-family="Lato" font-weight="300" font-size="7" fill="#d1fae5" letter-spacing="5" style="text-transform: uppercase">Refugio Natural</text>
-                </svg>
+                <!-- IMAGEN DEL LOGO ACTUALIZADA -->
+                <img src="logo_los_pelaitos.png" alt="Cabaña Los Pelaitos" class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
-            
-            <!-- MENU DESKTOP -->
             <div id="menu-desktop" class="hidden md:flex gap-8 items-center text-sm font-medium tracking-widest uppercase text-white">
+                <a href="#tour360" class="hover:text-emerald-400 transition-colors">Recorrido 360°</a>
                 <a href="#comodidades" class="hover:text-emerald-400 transition-colors">Espacios</a>
-                <a href="#reservar" class="hover:text-emerald-400 transition-colors">Tarifas</a>
                 <a href="#ubicacion" class="hover:text-emerald-400 transition-colors">Ubicación</a>
-                <a href="#reservar" id="btn-reservar-nav" class="px-6 py-3 border border-white text-white hover:bg-white hover:text-stone-900 transition-all duration-300">
-                    Armar Plan
-                </a>
+                <a href="#reservar" class="px-6 py-3 border border-white text-white hover:bg-white hover:text-stone-900 transition-all duration-300">Armar Plan</a>
             </div>
-
-            <!-- MENU MOBILE BUTTON -->
-            <button id="menu-btn" class="md:hidden text-white">
+            
+            <!-- Botón Menú Móvil -->
+            <button id="menu-btn" class="md:hidden text-white z-50 relative">
                 <i data-lucide="menu" class="w-8 h-8"></i>
             </button>
         </div>
     </nav>
 
-    <!-- MOBILE MENU OVERLAY -->
-    <div id="mobile-menu" class="fixed inset-0 z-40 bg-stone-900 text-stone-100 flex flex-col items-center justify-center space-y-8 transform translate-y-[-100%] transition-transform duration-300">
-        <button id="close-menu-btn" class="absolute top-6 right-6 text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <a onclick="closeMenu()" href="#comodidades" class="text-2xl font-serif">Espacios</a>
-        <a onclick="closeMenu()" href="#reservar" class="text-2xl font-serif">Armar Plan</a>
-        <a onclick="closeMenu()" href="#ubicacion" class="text-2xl font-serif">Ubicación</a>
+    <!-- MOBILE MENU (Cajón lateral izquierdo) -->
+    <div id="mobile-menu" class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 text-stone-100 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col pt-24 px-6 space-y-6">
+        <a onclick="closeMenu()" href="#tour360" class="text-lg font-serif border-b border-emerald-900 pb-2">Recorrido 360°</a>
+        <a onclick="closeMenu()" href="#comodidades" class="text-lg font-serif border-b border-emerald-900 pb-2">Espacios</a>
+        <a onclick="closeMenu()" href="#reservar" class="text-lg font-serif border-b border-emerald-900 pb-2">Armar tu plan</a>
+        <a onclick="closeMenu()" href="#ubicacion" class="text-lg font-serif border-b border-emerald-900 pb-2">Ubicación</a>
     </div>
+    <!-- Overlay para cerrar menú al tocar fuera -->
+    <div id="menu-overlay" onclick="closeMenu()" class="fixed inset-0 z-30 bg-black/50 hidden transition-opacity"></div>
 
-    <!-- 1. HERO SECTION -->
+    <!-- HERO -->
     <header class="relative h-screen w-full overflow-hidden flex items-center justify-center">
-        <!-- VIDEO DE FONDO -->
         <div class="absolute inset-0 z-0">
-            <!-- NOTA: Asegúrate que el video 'Cabana-Los-Peladitos.mp4' esté en la misma carpeta -->
             <video autoplay loop muted playsinline class="w-full h-full object-cover" poster="galeria-piscina.jpg">
                 <source src="Cabana-Los-Peladitos.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 bg-stone-950/40 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-stone-950/30"></div>
         </div>
-
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center gap-6 animate-fade-in-up">
-            <div class="flex items-center gap-4 mb-2">
-                <div class="h-[1px] w-12 bg-white/60"></div>
-                <span class="text-white/90 text-xs md:text-sm uppercase tracking-[0.3em] font-light">Sabanagrande, Atlántico</span>
-                <div class="h-[1px] w-12 bg-white/60"></div>
-            </div>
-            
-            <h1 class="font-serif text-5xl md:text-8xl text-white leading-tight drop-shadow-lg">
-                Cabaña <br />
-                <span class="italic font-light">Los Pelaitos</span>
-            </h1>
-            
-            <p class="text-stone-200 text-lg md:text-xl font-light max-w-lg leading-relaxed mt-4 mb-8 text-shadow">
-                Tu refugio privado para desconectar y crear momentos inolvidables.
-            </p>
-
-            <div class="flex flex-col md:flex-row gap-6">
-                <a href="#tour360" class="group flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white transition-all hover:bg-white hover:text-stone-900">
-                    <span class="uppercase tracking-widest text-xs font-bold">Tour Virtual</span>
-                    <i data-lucide="maximize-2" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
-                </a>
-                <a href="#reservar" class="px-8 py-4 bg-emerald-950 text-white border border-emerald-950 hover:bg-emerald-900 transition-all uppercase tracking-widest text-xs font-bold flex items-center gap-2">
-                    Cotizar Estadía
-                </a>
-            </div>
-        </div>
-
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
-            <div class="w-[1px] h-16 bg-gradient-to-b from-transparent via-white to-transparent"></div>
+            <h1 class="font-serif text-5xl md:text-8xl text-white leading-tight drop-shadow-lg">Cabaña <br/><span class="italic font-light">Los Pelaitos</span></h1>
+            <p class="text-stone-200 text-lg md:text-xl font-light max-w-lg leading-relaxed mt-4 mb-8">Tu refugio privado para desconectar y crear momentos inolvidables.</p>
+            <a href="#reservar" class="px-8 py-4 bg-emerald-950 text-white border border-emerald-950 hover:bg-emerald-900 transition-all uppercase tracking-widest text-xs font-bold">Cotizar Estadía</a>
         </div>
     </header>
 
-    <!-- 2. TOUR 360 -->
+    <!-- TOUR 360 -->
     <section id="tour360" class="py-24 bg-stone-900 text-stone-100 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                <div>
-                    <span class="text-emerald-500 uppercase tracking-widest text-xs font-bold mb-2 block">Inmersión Total</span>
-                    <h2 class="font-serif text-4xl md:text-5xl">Explora cada rincón</h2>
-                </div>
-                <p class="text-stone-400 max-w-md text-sm leading-relaxed">
-                    Recorre la propiedad desde tu dispositivo antes de llegar. Descubre la amplitud de nuestros espacios sociales y la privacidad de nuestras habitaciones.
-                </p>
-            </div>
-
-            <div class="w-full aspect-[16/9] md:aspect-[21/9] bg-stone-800 border border-white/5 shadow-2xl relative group overflow-hidden rounded-2xl">
-                
-                <!-- === ANIMACIÓN PRÓXIMAMENTE === -->
-                <div class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-stone-800 to-stone-900 z-20">
-                    <div class="relative mb-6">
-                        <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
-                        <div class="relative p-6 border border-emerald-500/30 rounded-full spin-slow">
-                            <i data-lucide="scan" class="w-12 h-12 text-emerald-400"></i>
-                        </div>
-                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <i data-lucide="camera" class="w-6 h-6 text-white"></i>
-                        </div>
+            <div class="w-full aspect-[16/9] md:aspect-[21/9] bg-stone-800 border border-white/5 shadow-2xl relative group overflow-hidden rounded-2xl flex items-center justify-center">
+                <div class="text-center">
+                    <div class="relative p-6 border border-emerald-500/30 rounded-full spin-slow inline-block mb-4">
+                        <i data-lucide="scan" class="w-12 h-12 text-emerald-400"></i>
                     </div>
-                    <h3 class="text-2xl font-serif text-white mb-2 tracking-wide">Próximamente</h3>
-                    <p class="text-emerald-400 uppercase tracking-widest text-xs font-bold bg-emerald-950/50 px-4 py-2 rounded-full border border-emerald-500/20">
-                        Recorrido Virtual 360°
-                    </p>
-                    <p class="text-stone-500 text-xs mt-4 max-w-xs text-center leading-relaxed">
-                        Estamos capturando cada detalle para que puedas vivir la experiencia desde casa.
-                    </p>
+                    <h3 class="text-2xl font-serif text-white mb-2">Próximamente</h3>
+                    <p class="text-emerald-400 uppercase tracking-widest text-xs font-bold">Recorrido Virtual 360°</p>
                 </div>
-                <!-- === FIN ANIMACIÓN === -->
-
             </div>
         </div>
     </section>
 
-    <!-- 3. AMENITIES -->
+    <!-- AMENITIES (DISEÑO PREMIUM RESTAURADO) -->
     <section id="comodidades" class="py-24 max-w-7xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
@@ -213,9 +146,11 @@
                 <p class="text-stone-500 mb-8 text-lg font-light leading-relaxed">
                     Cada elemento de Cabaña Los Pelaitos ha sido seleccionado para ofrecer una estadía sin preocupaciones. Desde la tecnología hasta el mobiliario, todo está pensado para ti.
                 </p>
+                
                 <button onclick="toggleAmenities()" id="btn-ver-mas" class="border-b border-emerald-900 pb-1 text-emerald-900 uppercase tracking-widest text-xs hover:opacity-70 transition-opacity focus:outline-none text-left">
                     Ver lista completa
                 </button>
+
                 <div id="amenities-extra" class="hidden mt-6 space-y-3 text-stone-600 bg-white p-6 rounded-lg border border-stone-200 shadow-sm transition-all duration-300">
                     <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Zona de hamacas y relax</p>
                     <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Juegos: Dominó, Jenga, Cartas</p>
@@ -225,16 +160,42 @@
                     <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Cancha de voleibol</p>
                 </div>
             </div>
+
             <div class="grid grid-cols-2 gap-4">
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"><div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="wind" class="w-6 h-6"></i></div><h4 class="font-serif text-lg text-stone-900 mb-2">Aire Acondicionado</h4><p class="text-stone-400 text-xs uppercase tracking-wide">Climatización total</p></div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"><div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="wifi" class="w-6 h-6"></i></div><h4 class="font-serif text-lg text-stone-900 mb-2">Starlink WiFi</h4><p class="text-stone-400 text-xs uppercase tracking-wide">Alta velocidad</p></div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"><div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="waves" class="w-6 h-6"></i></div><h4 class="font-serif text-lg text-stone-900 mb-2">Piscina Privada</h4><p class="text-stone-400 text-xs uppercase tracking-wide">Uso exclusivo</p></div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"><div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="coffee" class="w-6 h-6"></i></div><h4 class="font-serif text-lg text-stone-900 mb-2">Zona BBQ</h4><p class="text-stone-400 text-xs uppercase tracking-wide">Totalmente equipada</p></div>
+                <!-- Tarjetas con diseño premium restaurado -->
+                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="wind" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-serif text-lg text-stone-900 mb-2">Aire Acondicionado</h4>
+                    <p class="text-stone-400 text-xs uppercase tracking-wide">Climatización total</p>
+                </div>
+                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="wifi" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-serif text-lg text-stone-900 mb-2">Starlink WiFi</h4>
+                    <p class="text-stone-400 text-xs uppercase tracking-wide">Alta velocidad</p>
+                </div>
+                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="waves" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-serif text-lg text-stone-900 mb-2">Piscina Privada</h4>
+                    <p class="text-stone-400 text-xs uppercase tracking-wide">Uso exclusivo</p>
+                </div>
+                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="coffee" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-serif text-lg text-stone-900 mb-2">Zona BBQ</h4>
+                    <p class="text-stone-400 text-xs uppercase tracking-wide">Totalmente equipada</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- 5. ARMA TU PLAN (SISTEMA DE RESERVAS CONECTADO) -->
+    <!-- ARMA TU PLAN (MOTOR) -->
     <section id="reservar" class="bg-emerald-950 text-stone-100 py-24 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="max-w-5xl mx-auto px-6 relative z-10">
@@ -247,14 +208,14 @@
                         <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="user" class="w-4 h-4 text-emerald-300"></i></span>
                         <div class="text-left">
                             <p class="text-stone-300 text-xs uppercase tracking-wide">Adultos</p>
-                            <p class="font-bold text-lg text-white">$70.000 COP <span class="text-xs font-normal text-emerald-300">*noche</span></p>
+                            <p class="font-bold text-lg text-white">$70.000 <span class="text-xs font-normal text-emerald-300">*noche</span> <span class="text-sm font-light text-white ml-2">| Pasadía: $50.000</span></p>
                         </div>
                     </div>
                     <div class="flex items-center justify-center gap-2">
                         <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="baby" class="w-4 h-4 text-emerald-300"></i></span>
                         <div class="text-left">
                             <p class="text-stone-300 text-xs uppercase tracking-wide">Niños (5-13 años)</p>
-                            <p class="font-bold text-lg text-white">$40.000 COP <span class="text-xs font-normal text-emerald-300">*noche</span></p>
+                            <p class="font-bold text-lg text-white">$40.000 <span class="text-xs font-normal text-emerald-300">*noche</span></p>
                         </div>
                     </div>
                 </div>
@@ -320,7 +281,7 @@
                         <input id="client-name" type="text" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-bold" placeholder="Para el registro">
                     </div>
 
-                    <!-- Celular/WhatsApp (NUEVO CAMPO) -->
+                    <!-- Celular/WhatsApp -->
                     <div>
                         <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
                             <span>Tu Celular / WhatsApp</span> <span class="text-red-500">*</span>
@@ -329,7 +290,7 @@
                     </div>
 
                     <!-- Mascotas (SWITCH) -->
-                    <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+                    <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-white rounded-full text-emerald-700"><i data-lucide="paw-print" class="w-4 h-4"></i></div>
                             <div>
@@ -376,8 +337,9 @@
                     </div>
 
                     <div class="mt-8">
-                        <button onclick="submitReservation()" id="btn-submit" class="w-full bg-emerald-950 text-white py-4 rounded-xl font-bold shadow-xl hover:bg-emerald-900 transition-all flex justify-center gap-3 items-center transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                        <button onclick="submitReservation()" id="btn-submit" class="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold shadow-xl hover:bg-[#128C7E] transition-all flex justify-center gap-3 items-center transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <!-- Logo Oficial WhatsApp SVG -->
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                             <span class="text-lg">Confirmar disponibilidad en WhatsApp</span>
                         </button>
                         <p class="text-center text-[10px] text-stone-400 mt-3">* Los campos marcados son obligatorios para cotizar.</p>
@@ -399,8 +361,9 @@
             </p>
             
             <!-- AQUÍ PEGA TU NÚMERO DE WHATSAPP EN EL 'href' -->
-            <a href="https://wa.me/573000000000" target="_blank" class="inline-flex items-center gap-2 bg-white border-2 border-emerald-900 text-emerald-900 px-8 py-3 rounded-full font-bold hover:bg-emerald-900 hover:text-white transition-all">
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+            <a href="https://wa.me/573000000000" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white px-8 py-4 rounded-full font-bold hover:bg-green-700 transition-all shadow-xl animate-breathe">
+                <!-- Logo Oficial WhatsApp SVG -->
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                 Hablar con un asesor
             </a>
         </div>
@@ -468,9 +431,19 @@
             if (type === 'pasadia') {
                 btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
                 btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
+                // Pasadía: Permitir un solo día
+                if(datePicker) {
+                    datePicker.set("mode", "single");
+                    datePicker.clear(); // Limpiar fechas al cambiar
+                }
             } else {
                 btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
                 btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
+                // Alojamiento: Rango de fechas
+                if(datePicker) {
+                    datePicker.set("mode", "range");
+                    datePicker.clear(); // Limpiar fechas al cambiar
+                }
             }
             updateCalc();
         }
@@ -488,7 +461,7 @@
             } catch (e) { console.error(e); }
             
             datePicker = flatpickr("#date-range", {
-                mode: "range",
+                mode: "range", // Por defecto alojamiento
                 minDate: "today",
                 dateFormat: "Y-m-d",
                 disable: blockedDates,
@@ -530,14 +503,16 @@
             let durationText = "";
 
             if (dates.length > 0) {
-                if (dates.length === 2) {
-                    const diff = Math.abs(dates[1] - dates[0]);
-                    duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                if (currentPlan === 'alojamiento') {
+                    if (dates.length === 2) {
+                        const diff = Math.abs(dates[1] - dates[0]);
+                        duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                    }
+                    if (duration === 0 && dates.length === 1) duration = 1; // Mínimo 1 noche si selecciona el mismo día por error visual, aunque flatpickr range suele manejar esto
+                } else {
+                    // Pasadía (single mode)
+                    duration = 1;
                 }
-                // Si es Pasadía y duración es 0 (mismo día seleccionado dos veces o 1 clic), cuenta como 1 día
-                if (currentPlan === 'pasadia' && duration === 0) duration = 1;
-                // Si es Alojamiento y duración es 0, cuenta como 1 noche
-                if (currentPlan === 'alojamiento' && duration === 0) duration = 1;
             }
 
             durationText = currentPlan === 'alojamiento' ? `${duration} Noche${duration !== 1 ? 's' : ''}` : `${duration} Día${duration !== 1 ? 's' : ''}`;
@@ -552,7 +527,7 @@
             } else {
                 // Pasadía (por día)
                 const daily = (adults * prices.adult) + (kidsPaid * prices.kid);
-                total = daily * duration;
+                total = daily * duration; // Siempre es 1 día en pasadía modo 'single', pero si quisieras varios pasadías, sería * duration. Aquí es 1.
             }
 
             // Render
@@ -642,14 +617,23 @@
         const mobileMenu = document.getElementById('mobile-menu');
         const menuBtn = document.getElementById('menu-btn');
         const closeMenuBtn = document.getElementById('close-menu-btn');
+        const menuOverlay = document.getElementById('menu-overlay');
 
         if (menuBtn) {
-            menuBtn.addEventListener('click', () => mobileMenu.classList.remove('translate-y-[-100%]'));
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('-translate-x-full');
+                menuOverlay.classList.remove('hidden');
+            });
         }
+        
+        function closeMenu() { 
+            mobileMenu.classList.add('-translate-x-full'); 
+            menuOverlay.classList.add('hidden');
+        }
+
         if (closeMenuBtn) {
-            closeMenuBtn.addEventListener('click', () => mobileMenu.classList.add('translate-y-[-100%]'));
+            closeMenuBtn.addEventListener('click', closeMenu);
         }
-        function closeMenu() { mobileMenu.classList.add('translate-y-[-100%]'); }
 
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
