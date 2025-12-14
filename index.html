@@ -8,7 +8,7 @@
     <!-- 1. TAILWIND CSS (Diseño) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. FLATPICKR (CALENDARIO AVANZADO) -->
+    <!-- 2. FLATPICKR (Calendario) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
@@ -44,6 +44,9 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f5f5f4; }
         ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 4px; }
+        
+        /* Utilidades para inputs de fecha */
+        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
         
         /* Animaciones */
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
@@ -86,7 +89,6 @@
             
             <!-- MENU DESKTOP -->
             <div id="menu-desktop" class="hidden md:flex gap-8 items-center text-sm font-medium tracking-widest uppercase text-white">
-                <a href="#experiencia" class="hover:text-emerald-400 transition-colors">Experiencia</a>
                 <a href="#comodidades" class="hover:text-emerald-400 transition-colors">Espacios</a>
                 <a href="#reservar" class="hover:text-emerald-400 transition-colors">Tarifas</a>
                 <a href="#ubicacion" class="hover:text-emerald-400 transition-colors">Ubicación</a>
@@ -105,7 +107,6 @@
     <!-- MOBILE MENU OVERLAY -->
     <div id="mobile-menu" class="fixed inset-0 z-40 bg-stone-900 text-stone-100 flex flex-col items-center justify-center space-y-8 transform translate-y-[-100%] transition-transform duration-300">
         <button id="close-menu-btn" class="absolute top-6 right-6 text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <a onclick="closeMenu()" href="#experiencia" class="text-2xl font-serif">Experiencia</a>
         <a onclick="closeMenu()" href="#comodidades" class="text-2xl font-serif">Espacios</a>
         <a onclick="closeMenu()" href="#reservar" class="text-2xl font-serif">Armar Plan</a>
         <a onclick="closeMenu()" href="#ubicacion" class="text-2xl font-serif">Ubicación</a>
@@ -195,54 +196,7 @@
         </div>
     </section>
 
-    <!-- 3. GALERÍA -->
-    <section id="experiencia" class="bg-stone-100 py-24">
-        <div class="max-w-7xl mx-auto px-6 mb-16 text-center">
-            <h2 class="font-serif text-4xl text-stone-900 mb-4">La Experiencia Los Pelaitos</h2>
-            <div class="w-24 h-[1px] bg-emerald-900 mx-auto opacity-20"></div>
-        </div>
-
-        <div class="relative w-full h-[70vh] bg-stone-200 overflow-hidden group cursor-pointer" onclick="manualNextSlide()">
-            <!-- Slides -->
-            <div id="slide-1" class="gallery-slide absolute inset-0 transition-opacity duration-700 opacity-100">
-                <img src="galeria-piscina.jpg" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <div class="absolute bottom-0 left-0 p-12 md:p-24 text-white pointer-events-none">
-                    <h3 class="font-serif text-5xl md:text-7xl">Piscina y Diversión</h3>
-                </div>
-            </div>
-            
-            <div id="slide-2" class="gallery-slide absolute inset-0 transition-opacity duration-700 opacity-0">
-                <img src="galeria-relax.jpg" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <div class="absolute bottom-0 left-0 p-12 md:p-24 text-white pointer-events-none">
-                    <h3 class="font-serif text-5xl md:text-7xl">Descanso Natural</h3>
-                </div>
-            </div>
-
-             <div id="slide-3" class="gallery-slide absolute inset-0 transition-opacity duration-700 opacity-0">
-                <img src="galeria-actividades.jpg" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <div class="absolute bottom-0 left-0 p-12 md:p-24 text-white pointer-events-none">
-                    <h3 class="font-serif text-5xl md:text-7xl">Momentos en Grupo</h3>
-                </div>
-            </div>
-
-             <div id="slide-4" class="gallery-slide absolute inset-0 transition-opacity duration-700 opacity-0">
-                <img src="galeria-habitaciones.jpg" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <div class="absolute bottom-0 left-0 p-12 md:p-24 text-white pointer-events-none">
-                    <h3 class="font-serif text-5xl md:text-7xl">Confort para Todos</h3>
-                </div>
-            </div>
-            
-            <div class="absolute bottom-8 right-8 text-white/50 text-xs uppercase tracking-widest animate-pulse pointer-events-none">
-                Toca para avanzar
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. AMENITIES -->
+    <!-- 3. AMENITIES -->
     <section id="comodidades" class="py-24 max-w-7xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
@@ -250,6 +204,12 @@
                 <h2 class="font-serif text-4xl md:text-5xl text-stone-900 mb-8 leading-tight">
                     Diseñado para el <br/><span class="italic text-emerald-800">confort absoluto</span>
                 </h2>
+                <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 mb-6 rounded-r-lg">
+                    <p class="text-emerald-900 font-medium flex items-start gap-2">
+                        <i data-lucide="chef-hat" class="w-5 h-5 mt-1 shrink-0"></i>
+                        La cabaña está dotada con nevera y cocina integral. ¡Pueden llevar su comida y cocinar con total libertad, sea en pasadía o alojamiento!
+                    </p>
+                </div>
                 <p class="text-stone-500 mb-8 text-lg font-light leading-relaxed">
                     Cada elemento de Cabaña Los Pelaitos ha sido seleccionado para ofrecer una estadía sin preocupaciones. Desde la tecnología hasta el mobiliario, todo está pensado para ti.
                 </p>
@@ -276,81 +236,99 @@
 
     <!-- 5. ARMA TU PLAN (SISTEMA DE RESERVAS CONECTADO) -->
     <section id="reservar" class="bg-emerald-950 text-stone-100 py-24 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="max-w-5xl mx-auto px-6 relative z-10">
             
-            <div class="text-center mb-12">
-                <h2 class="font-serif text-4xl md:text-5xl mb-4">Arma tu Plan a Medida</h2>
-                <p class="text-emerald-100/60 font-light">Fechas sincronizadas en tiempo real con nuestra disponibilidad.</p>
+            <!-- SECCIÓN INFORMATIVA DE PRECIOS -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-12 border border-white/10 text-center max-w-3xl mx-auto">
+                <h3 class="font-serif text-2xl text-white mb-4">Tarifas de Alojamiento</h3>
+                <div class="flex flex-col md:flex-row justify-center gap-8 text-sm">
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="user" class="w-4 h-4 text-emerald-300"></i></span>
+                        <div class="text-left">
+                            <p class="text-stone-300 text-xs uppercase tracking-wide">Adultos</p>
+                            <p class="font-bold text-lg text-white">$70.000 COP <span class="text-xs font-normal text-emerald-300">*noche</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="baby" class="w-4 h-4 text-emerald-300"></i></span>
+                        <div class="text-left">
+                            <p class="text-stone-300 text-xs uppercase tracking-wide">Niños (5-13 años)</p>
+                            <p class="font-bold text-lg text-white">$40.000 COP <span class="text-xs font-normal text-emerald-300">*noche</span></p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-stone-400 mt-4">* Los valores aplican por persona según el plan seleccionado abajo.</p>
             </div>
 
-            <!-- CONTENEDOR DEL CALCULADOR -->
+            <div class="text-center mb-8">
+                <h2 class="font-serif text-4xl md:text-5xl mb-4">Arma tu Plan a Medida</h2>
+                <p class="text-emerald-100/60 font-light">Calcula el precio exacto y reserva vía WhatsApp.</p>
+            </div>
+
+            <!-- CALCULADOR -->
             <div class="grid lg:grid-cols-12 gap-8 bg-white rounded-3xl p-6 md:p-8 shadow-2xl text-stone-800">
                 
                 <!-- COLUMNA IZQUIERDA: FORMULARIO -->
-                <div class="lg:col-span-5 space-y-6 border-b lg:border-b-0 lg:border-r border-stone-200 pb-6 lg:pb-0 lg:pr-8">
-                    <h3 class="font-serif text-2xl text-emerald-950 mb-4 flex items-center gap-2">
-                        <i data-lucide="calendar-check" class="w-6 h-6"></i> 1. Tu Itinerario
-                    </h3>
+                <div class="lg:col-span-6 space-y-6 border-b lg:border-b-0 lg:border-r border-stone-200 pb-6 lg:pb-0 lg:pr-8">
                     
-                    <div id="loading-calendar" class="text-center text-xs text-emerald-600 font-bold hidden mb-2">
-                        <span class="animate-pulse">⏳ Sincronizando con Google Calendar...</span>
+                    <!-- SWITCH PASADÍA / ALOJAMIENTO -->
+                    <div class="flex bg-stone-100 p-1 rounded-xl mb-6 relative">
+                        <button onclick="setPlanType('pasadia')" id="btn-pasadia" class="flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative">PASADÍA</button>
+                        <button onclick="setPlanType('alojamiento')" id="btn-alojamiento" class="flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative">ALOJAMIENTO</button>
                     </div>
 
-                    <!-- Fechas con Flatpickr -->
+                    <div id="loading-calendar" class="text-center text-xs text-emerald-600 font-bold hidden mb-2">
+                        <span class="animate-pulse">⏳ Sincronizando Calendario...</span>
+                    </div>
+
+                    <!-- Input Fechas -->
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Selecciona tus Fechas</label>
-                        <input id="date-range" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold text-center" placeholder="Toque aquí para abrir calendario" readonly>
+                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
+                            <span>Selecciona tus Fechas</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input id="date-range" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold text-center" placeholder="Toque aquí para seleccionar" readonly>
                     </div>
 
                     <!-- Huéspedes -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Adultos</label>
-                            <select id="adults" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" onchange="updateCalc()">
-                                <option value="10">10 Adultos (Mínimo)</option>
-                                <option value="15">15 Adultos</option>
-                                <option value="20">20 Adultos</option>
-                                <option value="25">25 Adultos</option>
-                                <option value="30">30 Adultos</option>
-                                <option value="40">40 Adultos</option>
-                                <option value="50">50 Adultos</option>
-                            </select>
+                            <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
+                                <span>Adultos (> 13 años)</span> <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="adults" min="1" max="25" value="1" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
                         </div>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Niños (5+ años)</label>
-                                <select id="kids-paid" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" onchange="updateCalc()">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5+</option>
-                                </select>
-                                <p class="text-[9px] text-emerald-700 mt-1">*Cuentan como huésped</p>
+                                <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Niños (5-13 años)</label>
+                                <input type="number" id="kids-paid" min="0" max="25" value="0" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Niños (< 5 años)</label>
-                                <select id="kids-free" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3+</option>
-                                </select>
-                                <p class="text-[9px] text-stone-400 mt-1">*No pagan</p>
+                                <input type="number" id="kids-free" min="0" max="25" value="0" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
                             </div>
                         </div>
+                        <p id="capacity-warning" class="text-xs text-red-500 font-bold hidden flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i> Máximo 25 personas.</p>
                     </div>
 
                     <!-- Nombre -->
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Tu Nombre Completo</label>
-                        <input id="client-name" type="text" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" placeholder="Para la reserva">
+                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
+                            <span>Tu Nombre Completo</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input id="client-name" type="text" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-bold" placeholder="Para el registro">
                     </div>
 
-                    <!-- Mascotas -->
+                    <!-- Celular/WhatsApp (NUEVO CAMPO) -->
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
+                            <span>Tu Celular / WhatsApp</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input id="client-phone" type="tel" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-bold" placeholder="Ej: 300 123 4567">
+                    </div>
+
+                    <!-- Mascotas (SWITCH) -->
                     <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-lg border border-emerald-100">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-white rounded-full text-emerald-700"><i data-lucide="paw-print" class="w-4 h-4"></i></div>
@@ -367,41 +345,64 @@
                 </div>
 
                 <!-- COLUMNA DERECHA: RESULTADOS -->
-                <div class="lg:col-span-7 flex flex-col justify-between">
+                <div class="lg:col-span-6 flex flex-col justify-between">
                     <div>
                         <h3 class="font-serif text-2xl text-emerald-950 mb-6 flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-6 h-6"></i> 2. Tu Cotización
+                            <i data-lucide="calculator" class="w-6 h-6"></i> Tu Cotización
                         </h3>
                         
                         <div class="bg-stone-50 p-6 rounded-xl border border-stone-200 space-y-4">
-                            <div class="flex justify-between border-b border-stone-200 pb-2">
-                                <span class="text-stone-500">Plan Seleccionado:</span>
-                                <span class="font-bold text-emerald-800" id="plan-type">--</span>
+                            <div id="exclusivity-badge" class="hidden bg-gold-500/20 text-yellow-800 text-xs font-bold px-3 py-2 rounded-lg text-center border border-gold-500/30 mb-2">
+                                ✨ ¡Incluye Exclusividad de la Cabaña! ✨
                             </div>
-                            <div class="flex justify-between border-b border-stone-200 pb-2">
+                            
+                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
+                                <span class="text-stone-500">Plan:</span>
+                                <span class="font-bold text-emerald-800 uppercase" id="plan-type">ALOJAMIENTO</span>
+                            </div>
+                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
                                 <span class="text-stone-500">Duración:</span>
                                 <span class="font-bold" id="nights-count">0 Noches</span>
                             </div>
-                            <div class="flex justify-between border-b border-stone-200 pb-2">
+                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
                                 <span class="text-stone-500">Total Personas:</span>
-                                <span class="font-bold" id="pax-count">0</span>
+                                <span class="font-bold" id="pax-text">1 Adultos</span>
                             </div>
-                            <div class="flex justify-between pt-2">
-                                <span class="text-stone-500 font-bold uppercase text-lg">Valor Estimado</span>
+                            <div class="flex justify-between pt-2 items-end">
+                                <span class="text-stone-500 font-bold uppercase text-xs">Total Estimado*</span>
                                 <span class="font-black text-4xl text-emerald-900" id="total-price">$0</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-8">
-                        <button onclick="submitReservation()" id="btn-submit" class="w-full bg-emerald-950 text-white py-4 rounded-xl font-bold shadow-xl hover:bg-emerald-900 transition-all flex justify-center gap-3 items-center transform hover:-translate-y-1">
+                        <button onclick="submitReservation()" id="btn-submit" class="w-full bg-emerald-950 text-white py-4 rounded-xl font-bold shadow-xl hover:bg-emerald-900 transition-all flex justify-center gap-3 items-center transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
                             <i data-lucide="message-circle" class="w-6 h-6"></i>
-                            <span class="text-lg">Confirmar Disponibilidad en WhatsApp</span>
+                            <span class="text-lg">Confirmar disponibilidad en WhatsApp</span>
                         </button>
-                        <p class="text-center text-[10px] text-stone-400 mt-3">Al hacer clic, tus datos se guardan y te contactaremos para confirmar el pago.</p>
+                        <p class="text-center text-[10px] text-stone-400 mt-3">* Los campos marcados son obligatorios para cotizar.</p>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN: CONTACTO DIRECTO -->
+    <section class="py-20 bg-stone-50 border-t border-stone-200">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center justify-center p-4 bg-emerald-100 rounded-full text-emerald-800 mb-6">
+                <i data-lucide="headset" class="w-8 h-8"></i>
+            </div>
+            <h2 class="font-serif text-3xl text-emerald-950 mb-4">¿Prefieres que te guiemos paso a paso?</h2>
+            <p class="text-stone-500 mb-8 leading-relaxed">
+                Si no deseas armar el plan tú mismo o tienes dudas específicas, nuestro equipo está listo para atenderte personalmente.
+            </p>
+            
+            <!-- AQUÍ PEGA TU NÚMERO DE WHATSAPP EN EL 'href' -->
+            <a href="https://wa.me/573000000000" target="_blank" class="inline-flex items-center gap-2 bg-white border-2 border-emerald-900 text-emerald-900 px-8 py-3 rounded-full font-bold hover:bg-emerald-900 hover:text-white transition-all">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                Hablar con un asesor
+            </a>
         </div>
     </section>
 
@@ -435,140 +436,173 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-stone-950 text-stone-300 py-16 text-sm font-light border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
-            <div class="col-span-1 md:col-span-2">
-                <h4 class="font-serif text-xl text-white mb-4">Cabaña Los Pelaitos</h4>
-                <p class="max-w-xs leading-relaxed text-stone-400">
-                    Un refugio exclusivo diseñado para desconectar de la rutina y reconectar con lo esencial. Sabanagrande, Atlántico.
-                </p>
-            </div>
-            <div>
-                <h4 class="text-white uppercase tracking-widest text-xs font-bold mb-6">Social</h4>
-                <div class="flex gap-4">
-                    <a href="https://instagram.com" target="_blank" class="p-3 border border-stone-700 rounded-full hover:border-emerald-500 hover:text-emerald-500 transition-all text-white"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                    <a href="https://facebook.com" target="_blank" class="p-3 border border-stone-700 rounded-full hover:border-emerald-500 hover:text-emerald-500 transition-all text-white"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                    <a href="https://wa.me/573000000000" target="_blank" class="p-3 border border-stone-700 rounded-full hover:border-green-500 hover:text-green-500 transition-all text-white"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
-                </div>
-            </div>
+    <footer class="bg-emerald-950 text-stone-400 py-12 text-sm text-center border-t border-stone-800">
+        <div class="max-w-4xl mx-auto mb-4">
+            <h4 class="font-serif text-white text-lg">Cabaña Los Pelaitos</h4>
+            <p class="text-xs">Sabanagrande, Atlántico</p>
         </div>
-        <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-stone-900 text-center text-stone-500 text-xs uppercase tracking-wider">
-            <p>© 2023 Cabaña Los Pelaitos.</p>
-        </div>
+        <p class="text-[10px] opacity-50">© 2023 Todos los derechos reservados.</p>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- SCRIPTS -->
     <script>
         lucide.createIcons();
 
-        // ==========================================
-        // ⚠️ PEGA AQUÍ TU URL DEL SCRIPT DE GOOGLE
-        // ==========================================
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf2TMitUkp0ItpWMFRHx6FEYCXxEsa5fSF19TJ-qRp48uvgUY8xXiJk_XktOayDndMnw/exec"; 
-        
-        const PRICE_PASADIA = 50000;
-        const PRICE_ALOJAMIENTO_NOCHE = 70000;
+        // CONFIGURACIÓN DE PRECIOS
+        const PRICES = {
+            pasadia: { adult: 50000, kid: 40000 },
+            alojamiento: { adult: 70000, kid: 40000 }
+        };
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf2TMitUkp0ItpWMFRHx6FEYCXxEsa5fSF19TJ-qRp48uvgUY8xXiJk_XktOayDndMnw/exec";
         const formatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
 
+        let currentPlan = 'alojamiento';
         let datePicker;
 
-        // 1. CARGAR FECHAS BLOQUEADAS
+        // 1. CONTROLADOR DEL SWITCH
+        function setPlanType(type) {
+            currentPlan = type;
+            const btnPasadia = document.getElementById('btn-pasadia');
+            const btnAlojamiento = document.getElementById('btn-alojamiento');
+
+            if (type === 'pasadia') {
+                btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
+                btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
+            } else {
+                btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
+                btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
+            }
+            updateCalc();
+        }
+
+        // 2. CALENDARIO
         async function initCalendar() {
             const loader = document.getElementById('loading-calendar');
             loader.classList.remove('hidden');
-
+            let blockedDates = [];
             try {
-                let blockedDates = [];
                 if (GOOGLE_SCRIPT_URL.startsWith("https")) {
-                    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getBlockedDates`);
-                    blockedDates = await response.json();
-                    console.log("Fechas bloqueadas:", blockedDates);
+                    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getBlockedDates`);
+                    blockedDates = await res.json();
                 }
-
-                datePicker = flatpickr("#date-range", {
-                    mode: "range",
-                    minDate: "today",
-                    dateFormat: "Y-m-d",
-                    disable: blockedDates,
-                    locale: "es",
-                    onChange: function(selectedDates) {
-                        updateCalc(selectedDates);
-                    }
-                });
-
-            } catch (error) {
-                console.error("Error calendario:", error);
-                datePicker = flatpickr("#date-range", { mode: "range", minDate: "today", locale: "es", onChange: (sd) => updateCalc(sd) });
-            } finally {
-                loader.classList.add('hidden');
-            }
+            } catch (e) { console.error(e); }
+            
+            datePicker = flatpickr("#date-range", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                disable: blockedDates,
+                locale: "es",
+                onChange: () => updateCalc()
+            });
+            loader.classList.add('hidden');
         }
 
-        // 2. LÓGICA DE PRECIOS
-        function updateCalc(dates) {
-            // Manejo de undefined o null
-            const selectedDates = dates || (datePicker && datePicker.selectedDates) || [];
-            if (selectedDates.length === 0) return;
+        // 3. CÁLCULO DE PRECIOS
+        function updateCalc() {
+            // Obtener inputs
+            const adults = parseInt(document.getElementById('adults').value) || 0;
+            const kidsPaid = parseInt(document.getElementById('kids-paid').value) || 0;
+            const kidsFree = parseInt(document.getElementById('kids-free').value) || 0;
+            
+            const totalPax = adults + kidsPaid + kidsFree;
+            const payingPax = adults + kidsPaid;
 
-            const adults = parseInt(document.getElementById('adults').value);
-            const kidsPaid = parseInt(document.getElementById('kids-paid').value);
-            const totalPax = adults + kidsPaid;
-
-            let total = 0;
-            let plan = "Pasadía";
-            let nights = 0;
-
-            if (selectedDates.length === 2) {
-                const diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
-                nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            }
-
-            if (nights > 0) {
-                plan = "Alojamiento";
-                total = totalPax * PRICE_ALOJAMIENTO_NOCHE * nights;
+            // Warning Capacidad
+            const warning = document.getElementById('capacity-warning');
+            const submitBtn = document.getElementById('btn-submit');
+            if (totalPax > 25) {
+                warning.classList.remove('hidden');
+                submitBtn.disabled = true;
             } else {
-                plan = "Pasadía";
-                // Si seleccionó solo un día o nada, asume pasadía por 1 día
-                total = totalPax * PRICE_PASADIA;
+                warning.classList.add('hidden');
+                submitBtn.disabled = false;
             }
 
-            // Actualizar UI
-            document.getElementById('plan-type').innerText = plan;
-            document.getElementById('nights-count').innerText = nights > 0 ? nights : "Día Solar";
-            document.getElementById('pax-count').innerText = totalPax;
+            // Exclusividad
+            const badge = document.getElementById('exclusivity-badge');
+            if (totalPax >= 15) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            // Fechas
+            const dates = datePicker ? datePicker.selectedDates : [];
+            let duration = 0;
+            let durationText = "";
+
+            if (dates.length > 0) {
+                if (dates.length === 2) {
+                    const diff = Math.abs(dates[1] - dates[0]);
+                    duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                }
+                // Si es Pasadía y duración es 0 (mismo día seleccionado dos veces o 1 clic), cuenta como 1 día
+                if (currentPlan === 'pasadia' && duration === 0) duration = 1;
+                // Si es Alojamiento y duración es 0, cuenta como 1 noche
+                if (currentPlan === 'alojamiento' && duration === 0) duration = 1;
+            }
+
+            durationText = currentPlan === 'alojamiento' ? `${duration} Noche${duration !== 1 ? 's' : ''}` : `${duration} Día${duration !== 1 ? 's' : ''}`;
+
+            // Cálculo Total
+            let total = 0;
+            const prices = PRICES[currentPlan];
+            
+            if (currentPlan === 'alojamiento') {
+                const nightly = (adults * prices.adult) + (kidsPaid * prices.kid);
+                total = nightly * duration;
+            } else {
+                // Pasadía (por día)
+                const daily = (adults * prices.adult) + (kidsPaid * prices.kid);
+                total = daily * duration;
+            }
+
+            // Render
+            document.getElementById('plan-type').innerText = currentPlan.toUpperCase();
+            document.getElementById('nights-count').innerText = duration > 0 ? durationText : "--";
+            
+            // Formato descriptivo de personas
+            let paxString = `${adults} Adultos`;
+            if (kidsPaid > 0) paxString += ` y ${kidsPaid} Niños`;
+            if (kidsFree > 0) paxString += ` (+${kidsFree} Bebés)`;
+            document.getElementById('pax-text').innerText = paxString;
+
             document.getElementById('total-price').innerText = formatter.format(total);
         }
 
-        // 3. ENVIAR DATOS
+        // 4. ENVIAR FORMULARIO
         function submitReservation() {
-            const name = document.getElementById('client-name').value;
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
             const dates = document.getElementById('date-range').value;
             const adults = document.getElementById('adults').value;
+            
+            // Validación campos obligatorios
+            if (!name || !dates || !adults || adults < 1 || !phone) {
+                alert("⚠️ Por favor completa los campos obligatorios:\n- Fechas\n- Mínimo 1 Adulto\n- Nombre Completo\n- Celular/WhatsApp");
+                return;
+            }
+
             const kidsPaid = document.getElementById('kids-paid').value;
             const kidsFree = document.getElementById('kids-free').value;
             const hasPet = document.getElementById('pets').checked ? "Sí" : "No";
             const total = document.getElementById('total-price').innerText;
             const plan = document.getElementById('plan-type').innerText;
-            const nights = document.getElementById('nights-count').innerText;
+            const duration = document.getElementById('nights-count').innerText;
 
-            if (!name || !dates) { alert("Por favor completa nombre y fechas."); return; }
-            
             const btn = document.getElementById('btn-submit');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "Guardando...";
+            btn.innerHTML = "Procesando...";
             btn.disabled = true;
 
-            // Datos para Google Sheet
+            // Apps Script
             const formData = {
                 client: name,
+                phone: phone,
                 checkIn: dates.split(" to ")[0],
                 checkOut: dates.split(" to ")[1] || dates.split(" to ")[0],
-                pax: parseInt(adults) + parseInt(kidsPaid),
+                pax: parseInt(adults) + parseInt(kidsPaid) + parseInt(kidsFree),
                 plan: plan,
                 total: total
             };
 
-            // Enviar a Google
             if (GOOGLE_SCRIPT_URL.startsWith("https")) {
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -578,28 +612,26 @@
                 });
             }
 
-            // WhatsApp msg
+            // WhatsApp
             setTimeout(() => {
-                let msg = `Hola Cabaña Los Pelaitos! 🌴\n\nSoy *${name}* y quiero reservar:\n`;
-                msg += `📅 Fechas: ${dates} (${nights})\n`;
-                msg += `🎟️ Plan: ${plan}\n`;
-                msg += `👥 Huéspedes: ${adults} Adultos + ${kidsPaid} Niños (5+)\n`;
-                msg += `👶 Niños Pequeños: ${kidsFree}\n`;
+                let msg = `Hola Cabaña Los Pelaitos! 🌴\nSoy *${name}* (${phone}) y quiero reservar:\n\n`; 
+                msg += `🎟️ Plan: *${plan}*\n`;
+                msg += `📅 Fechas: ${dates} (${duration})\n`;
+                msg += `👥 Grupo: ${document.getElementById('pax-text').innerText}\n`;
                 msg += `🐶 Mascota: ${hasPet}\n`;
-                msg += `💰 Valor Cotizado: ${total}\n\n¿Me confirman disponibilidad?`;
+                msg += `💰 Valor Estimado: *${total}*\n\n`;
+                msg += `¿Me confirman disponibilidad para realizar el abono?`;
 
                 window.open(`https://wa.me/573000000000?text=${encodeURIComponent(msg)}`, '_blank');
-                
-                btn.innerHTML = originalText;
+                btn.innerHTML = "Confirmar disponibilidad en WhatsApp";
                 btn.disabled = false;
             }, 1000);
         }
 
-        // Init
+        // Listeners
         initCalendar();
-        updateCalc(); // Calc inicial
-
-        // Funciones extra
+        updateCalc();
+        
         function toggleAmenities() {
             const extra = document.getElementById('amenities-extra');
             const btn = document.getElementById('btn-ver-mas');
@@ -608,32 +640,21 @@
         }
 
         const mobileMenu = document.getElementById('mobile-menu');
-        document.getElementById('menu-btn').addEventListener('click', () => mobileMenu.classList.remove('translate-y-[-100%]'));
-        document.getElementById('close-menu-btn').addEventListener('click', () => mobileMenu.classList.add('translate-y-[-100%]'));
+        const menuBtn = document.getElementById('menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => mobileMenu.classList.remove('translate-y-[-100%]'));
+        }
+        if (closeMenuBtn) {
+            closeMenuBtn.addEventListener('click', () => mobileMenu.classList.add('translate-y-[-100%]'));
+        }
         function closeMenu() { mobileMenu.classList.add('translate-y-[-100%]'); }
 
-        // Carrusel
-        let currentSlide = 1; const totalSlides = 4; let slideInterval;
-        function nextSlide() {
-            currentSlide = currentSlide === totalSlides ? 1 : currentSlide + 1;
-            for(let i=1; i<=totalSlides; i++) {
-                const el = document.getElementById(`slide-${i}`);
-                if(el) { el.classList.remove('opacity-100', 'z-10'); el.classList.add('opacity-0'); }
-            }
-            document.getElementById(`slide-${currentSlide}`).classList.remove('opacity-0');
-            document.getElementById(`slide-${currentSlide}`).classList.add('opacity-100', 'z-10');
-        }
-        function manualNextSlide() { nextSlide(); clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 3000); }
-        slideInterval = setInterval(nextSlide, 3000);
-
-        // Navbar Scroll
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('bg-emerald-950', 'shadow-lg'); nav.classList.remove('bg-transparent');
-            } else {
-                nav.classList.remove('bg-emerald-950', 'shadow-lg'); nav.classList.add('bg-transparent');
-            }
+            if (window.scrollY > 50) { nav.classList.add('bg-emerald-950', 'shadow-lg'); nav.classList.remove('bg-transparent'); } 
+            else { nav.classList.remove('bg-emerald-950', 'shadow-lg'); nav.classList.add('bg-transparent'); }
         });
     </script>
 </body>
