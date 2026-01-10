@@ -1,713 +1,545 @@
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cabaña Los Pelaitos | Refugio Natural</title>
-    
-    <!-- 1. TAILWIND CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. FLATPICKR -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-
-    <!-- 3. CONFIGURACIÓN -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Lato', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
-                    colors: {
-                        emerald: { 950: '#022c22' },
-                        gold: { 500: '#d4af37' }
-                    },
-                    animation: {
-                        'breathe': 'breathe 3s ease-in-out infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        breathe: {
-                            '0%, 100%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.05)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- 4. ICONOS -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-        ::selection { background-color: #a7f3d0; color: #022c22; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f5f5f4; }
-        ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 4px; }
-        
-        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
-            background: #022c22 !important; border-color: #022c22 !important;
-        }
-        /* Días bloqueados (Google Calendar) */
-        .flatpickr-day.disabled { 
-            background: #f3f4f6; color: #cbd5e1; text-decoration: line-through; cursor: not-allowed; 
-        }
-        
-        /* Días Tentativos (Naranja Translúcido - Bloqueo 1 hora) */
-        .flatpickr-day.tentative {
-            background: rgba(249, 115, 22, 0.6) !important; /* Más suave */
-            border-color: rgba(249, 115, 22, 0.6) !important;
-            color: white !important;
-            opacity: 1;
-            cursor: not-allowed; 
-            box-shadow: none !important;
-        }
-        
-        .spin-slow { animation: spin 8s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    </style>
-    
-    <!-- FUENTES -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-</head>
-<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-200 selection:text-emerald-950">
-
-    <!-- NAVBAR -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-4 bg-transparent">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <a href="#" class="cursor-pointer group">
-                <!-- Imagen del Logo -->
-                <img src="logo_los_pelaitos.png" alt="Cabaña Los Pelaitos" class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-            </a>
-            <div id="menu-desktop" class="hidden md:flex gap-8 items-center text-sm font-medium tracking-widest uppercase text-white">
-                <a href="#tour360" class="hover:text-emerald-400 transition-colors">Recorrido 360°</a>
-                <a href="#comodidades" class="hover:text-emerald-400 transition-colors">Espacios</a>
-                <a href="#ubicacion" class="hover:text-emerald-400 transition-colors">Ubicación</a>
-                <a href="#reservar" class="px-6 py-3 border border-white text-white hover:bg-white hover:text-stone-900 transition-all duration-300">Armar Plan</a>
             </div>
-            
-            <!-- Botón Menú Móvil -->
-            <button id="menu-btn" class="md:hidden text-white z-50 relative">
-                <i data-lucide="menu" class="w-8 h-8"></i>
-            </button>
+          </div>
         </div>
-    </nav>
+      </div>
 
-    <!-- MOBILE MENU -->
-    <div id="mobile-menu" class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 text-stone-100 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col pt-24 px-6 space-y-6">
-        <a onclick="closeMenu()" href="#tour360" class="text-lg font-serif border-b border-emerald-900 pb-2">Recorrido 360°</a>
-        <a onclick="closeMenu()" href="#comodidades" class="text-lg font-serif border-b border-emerald-900 pb-2">Espacios</a>
-        <a onclick="closeMenu()" href="#reservar" class="text-lg font-serif border-b border-emerald-900 pb-2">Armar tu plan</a>
-        <a onclick="closeMenu()" href="#ubicacion" class="text-lg font-serif border-b border-emerald-900 pb-2">Ubicación</a>
-    </div>
-    <div id="menu-overlay" onclick="closeMenu()" class="fixed inset-0 z-30 bg-black/50 hidden transition-opacity"></div>
-
-    <!-- HERO -->
-    <header class="relative h-screen w-full overflow-hidden flex items-center justify-center">
-        <div class="absolute inset-0 z-0">
-            <video autoplay loop muted playsinline class="w-full h-full object-cover" poster="galeria-piscina.jpg">
-                <source src="Cabana-Los-Peladitos.mp4" type="video/mp4">
-            </video>
-            <div class="absolute inset-0 bg-stone-950/40 mix-blend-multiply"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-stone-950/30"></div>
+      <!-- Booking Form -->
+      <div class="booking-form" id="booking-form">
+        <div class="booking-form-header">
+          <div>
+            <span id="step-label">Paso 1 de 4</span>
+            <h3 class="font-serif" id="step-title">Número de Invitados</h3>
+          </div>
+          <div class="step-dots">
+            <div class="step-dot active" id="dot-1"></div>
+            <div class="step-dot" id="dot-2"></div>
+            <div class="step-dot" id="dot-3"></div>
+            <div class="step-dot" id="dot-4"></div>
+          </div>
         </div>
-        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center gap-6 fade-in-up">
-            <h1 class="font-serif text-5xl md:text-8xl text-white leading-tight drop-shadow-lg">Cabaña <br/><span class="italic font-light">Los Pelaitos</span></h1>
-            <p class="text-stone-200 text-lg md:text-xl font-light max-w-lg leading-relaxed mt-4 mb-8">Tu refugio privado para desconectar y crear momentos inolvidables.</p>
-            <a href="#reservar" class="px-8 py-4 bg-emerald-950 text-white border border-emerald-950 hover:bg-emerald-900 transition-all uppercase tracking-widest text-xs font-bold">Cotizar Estadía</a>
-        </div>
-    </header>
-
-    <!-- TOUR 360 -->
-    <section id="tour360" class="py-24 bg-stone-900 text-stone-100 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="w-full aspect-[16/9] md:aspect-[21/9] bg-stone-800 border border-white/5 shadow-2xl relative group overflow-hidden rounded-2xl flex items-center justify-center">
-                <div class="text-center">
-                    <div class="relative p-6 border border-emerald-500/30 rounded-full spin-slow inline-block mb-4">
-                        <i data-lucide="scan" class="w-12 h-12 text-emerald-400"></i>
-                    </div>
-                    <h3 class="text-2xl font-serif text-white mb-2">Próximamente</h3>
-                    <p class="text-emerald-400 uppercase tracking-widest text-xs font-bold">Recorrido Virtual 360°</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- AMENITIES (DISEÑO PREMIUM) -->
-    <section id="comodidades" class="py-24 max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-                <span class="text-emerald-900/60 uppercase tracking-widest text-xs font-bold mb-4 block">Detalles que importan</span>
-                <h2 class="font-serif text-4xl md:text-5xl text-stone-900 mb-8 leading-tight">
-                    Diseñado para el <br/><span class="italic text-emerald-800">confort absoluto</span>
-                </h2>
-                <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 mb-6 rounded-r-lg">
-                    <p class="text-emerald-900 font-medium flex items-start gap-2">
-                        <i data-lucide="chef-hat" class="w-5 h-5 mt-1 shrink-0"></i>
-                        La cabaña está dotada con nevera y cocina integral. ¡Pueden llevar su comida y cocinar con total libertad, sea en pasadía o alojamiento!
-                    </p>
-                </div>
-                <p class="text-stone-500 mb-8 text-lg font-light leading-relaxed">
-                    Cada elemento de Cabaña Los Pelaitos ha sido seleccionado para ofrecer una estadía sin preocupaciones. Desde la tecnología hasta el mobiliario, todo está pensado para ti.
-                </p>
-                
-                <button onclick="toggleAmenities()" id="btn-ver-mas" class="border-b border-emerald-900 pb-1 text-emerald-900 uppercase tracking-widest text-xs hover:opacity-70 transition-opacity focus:outline-none text-left">
-                    Ver lista completa
+        <div class="booking-form-content">
+          <!-- Step 1: Guests -->
+          <div class="step-content active" id="step-1">
+            <div class="guests-step">
+              <div class="guests-controls">
+                <button class="guest-btn" id="btn-minus" onclick="changeGuests(-1)">
+                  <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                 </button>
-
-                <div id="amenities-extra" class="hidden mt-6 space-y-3 text-stone-600 bg-white p-6 rounded-lg border border-stone-200 shadow-sm transition-all duration-300">
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Zona de hamacas y relax</p>
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Juegos: Dominó, Jenga, Cartas</p>
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Parqueadero privado seguro</p>
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Cocina integral totalmente dotada</p>
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Kiosco social para eventos</p>
-                    <p class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Cancha de voleibol</p>
-                </div>
+                <span class="guests-count" id="guests-count">2</span>
+                <button class="guest-btn" id="btn-plus" onclick="changeGuests(1)">
+                  <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                </button>
+              </div>
+              <p class="guests-info">Capacidad máxima de la cabaña: <strong>16 personas</strong>.</p>
+              <p class="guests-help">Para eventos con más de 16 personas, contáctanos vía <a href="https://wa.me/573001234567" target="_blank">WhatsApp</a>.</p>
             </div>
+          </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Tarjetas Premium -->
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
-                        <i data-lucide="wind" class="w-6 h-6"></i>
-                    </div>
-                    <h4 class="font-serif text-lg text-stone-900 mb-2">Aire Acondicionado</h4>
-                    <p class="text-stone-400 text-xs uppercase tracking-wide">Climatización total</p>
+          <!-- Step 2: Calendar -->
+          <div class="step-content" id="step-2">
+            <div class="calendar-step">
+              <p id="calendar-instruction">Selecciona el día de tu visita</p>
+              <div class="calendar">
+                <div class="calendar-header">
+                  <h4 id="calendar-month-year"></h4>
+                  <div class="calendar-nav">
+                    <button id="btn-prev-month" onclick="changeMonth(-1)">
+                      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button onclick="changeMonth(1)">
+                      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
-                        <i data-lucide="wifi" class="w-6 h-6"></i>
-                    </div>
-                    <h4 class="font-serif text-lg text-stone-900 mb-2">Starlink WiFi</h4>
-                    <p class="text-stone-400 text-xs uppercase tracking-wide">Alta velocidad</p>
+                <div class="calendar-weekdays">
+                  <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span>
                 </div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
-                        <i data-lucide="waves" class="w-6 h-6"></i>
-                    </div>
-                    <h4 class="font-serif text-lg text-stone-900 mb-2">Piscina Privada</h4>
-                    <p class="text-stone-400 text-xs uppercase tracking-wide">Uso exclusivo</p>
+                <div class="calendar-days" id="calendar-days"></div>
+              </div>
+              <div class="date-summary" id="date-summary">
+                <div class="date-summary-row">
+                  <div class="date-summary-col">
+                    <label id="start-label">Fecha</label>
+                    <span id="start-date">—</span>
+                  </div>
+                  <span class="date-summary-arrow" id="date-arrow" style="display:none;">→</span>
+                  <div class="date-summary-col" id="end-col" style="display:none;">
+                    <label>Salida</label>
+                    <span id="end-date">—</span>
+                  </div>
                 </div>
-                <div class="p-8 bg-white border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                    <div class="text-emerald-900 mb-4 group-hover:scale-110 transition-transform">
-                        <i data-lucide="coffee" class="w-6 h-6"></i>
-                    </div>
-                    <h4 class="font-serif text-lg text-stone-900 mb-2">Zona BBQ</h4>
-                    <p class="text-stone-400 text-xs uppercase tracking-wide">Totalmente equipada</p>
-                </div>
+                <div class="date-summary-total" id="nights-total" style="display:none;"></div>
+              </div>
             </div>
+          </div>
+
+          <!-- Step 3: Contact -->
+          <div class="step-content" id="step-3">
+            <div class="contact-step">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nombre *</label>
+                  <input type="text" id="input-firstname" placeholder="Tu nombre">
+                  <div class="form-error" id="error-firstname"></div>
+                </div>
+                <div class="form-group">
+                  <label>Apellido *</label>
+                  <input type="text" id="input-lastname" placeholder="Tu apellido">
+                  <div class="form-error" id="error-lastname"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Celular (WhatsApp) *</label>
+                <div class="phone-input">
+                  <span class="phone-prefix">+57</span>
+                  <input type="tel" id="input-phone" placeholder="3001234567" maxlength="10">
+                </div>
+                <div class="form-error" id="error-phone"></div>
+              </div>
+              <div class="form-group">
+                <label>Correo electrónico (opcional)</label>
+                <input type="email" id="input-email" placeholder="tu@email.com">
+                <div class="form-error" id="error-email"></div>
+              </div>
+              <div class="form-group">
+                <label>Fecha de cumpleaños (opcional)</label>
+                <div class="birthday-row">
+                  <select id="select-day"><option value="">Día</option></select>
+                  <select id="select-month"><option value="">Mes</option></select>
+                  <select id="select-year"><option value="">Año</option></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Confirmation -->
+          <div class="step-content" id="step-4">
+            <div class="confirm-step">
+              <div class="confirm-summary">
+                <h4>Resumen de tu reserva</h4>
+                <div class="confirm-row"><span class="label">Tipo</span><span class="value" id="confirm-type"></span></div>
+                <div class="confirm-row"><span class="label">Personas</span><span class="value" id="confirm-guests"></span></div>
+                <div class="confirm-row"><span class="label" id="confirm-dates-label">Fecha</span><span class="value" id="confirm-dates"></span></div>
+                <div class="confirm-row" id="confirm-nights-row" style="display:none;"><span class="label">Noches</span><span class="value" id="confirm-nights"></span></div>
+                <div class="confirm-row"><span class="label">Contacto</span><span class="value" id="confirm-contact"></span></div>
+                <div class="confirm-total"><span class="label">Total estimado</span><span class="value" id="confirm-total"></span></div>
+              </div>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="check-policies">
+                  <span class="checkbox-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
+                  <span>Acepto las <a href="https://ejemplo.com/politicas-cancelacion" target="_blank">políticas de cancelación</a> y <a href="https://ejemplo.com/terminos-uso" target="_blank">términos de uso</a></span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="check-contact">
+                  <span class="checkbox-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
+                  <span>Acepto ser contactado por WhatsApp o llamada telefónica para confirmar la reserva</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success -->
+          <div class="step-content" id="step-success">
+            <div class="success-step">
+              <div class="success-icon">
+                <svg class="icon-lg" fill="none" stroke="#6ee7b7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/></svg>
+              </div>
+              <h3 class="font-serif">¡Pre-reserva Exitosa!</h3>
+              <p>Hemos recibido tu solicitud para Cabaña Los Pelaitos. Nos comunicaremos contigo en las próximas 24 horas para confirmar tu reserva.</p>
+              <button class="btn-nueva-reserva" onclick="resetBooking()">Nueva Reserva</button>
+            </div>
+          </div>
         </div>
-    </section>
-
-    <!-- ARMA TU PLAN (MOTOR) -->
-    <section id="reservar" class="bg-emerald-950 text-stone-100 py-24 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        <div class="max-w-5xl mx-auto px-6 relative z-10">
-            
-            <!-- SECCIÓN INFORMATIVA DE PRECIOS -->
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-12 border border-white/10 text-center max-w-3xl mx-auto">
-                <h3 class="font-serif text-2xl text-white mb-4">Tarifas de Alojamiento</h3>
-                <div class="flex flex-col md:flex-row justify-center gap-8 text-sm">
-                    <div class="flex items-center justify-center gap-2">
-                        <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="user" class="w-4 h-4 text-emerald-300"></i></span>
-                        <div class="text-left">
-                            <p class="text-stone-300 text-xs uppercase tracking-wide">Adultos</p>
-                            <p class="font-bold text-lg text-white">$70.000 <span class="text-xs font-normal text-emerald-300">*noche</span> <span class="text-sm font-light text-white ml-2">| Pasadía: $50.000</span></p>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-center gap-2">
-                        <span class="bg-emerald-500/20 p-2 rounded-full"><i data-lucide="baby" class="w-4 h-4 text-emerald-300"></i></span>
-                        <div class="text-left">
-                            <p class="text-stone-300 text-xs uppercase tracking-wide">Niños (5-13 años)</p>
-                            <p class="font-bold text-lg text-white">$40.000 <span class="text-xs font-normal text-emerald-300">*noche</span></p>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-[10px] text-stone-400 mt-4">* Los valores aplican por persona según el plan seleccionado abajo.</p>
-            </div>
-
-            <div class="text-center mb-8">
-                <h2 class="font-serif text-4xl md:text-5xl mb-4">Arma tu Plan a Medida</h2>
-                <p class="text-emerald-100/60 font-light">Calcula el precio exacto y reserva vía WhatsApp.</p>
-            </div>
-
-            <!-- CALCULADOR -->
-            <div class="grid lg:grid-cols-12 gap-8 bg-white rounded-3xl p-6 md:p-8 shadow-2xl text-stone-800">
-                
-                <!-- COLUMNA IZQUIERDA: FORMULARIO -->
-                <div class="lg:col-span-6 space-y-6 border-b lg:border-b-0 lg:border-r border-stone-200 pb-6 lg:pb-0 lg:pr-8">
-                    
-                    <!-- SWITCH PASADÍA / ALOJAMIENTO -->
-                    <div class="flex bg-stone-100 p-1 rounded-xl mb-6 relative">
-                        <button onclick="setPlanType('pasadia')" id="btn-pasadia" class="flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative">PASADÍA</button>
-                        <button onclick="setPlanType('alojamiento')" id="btn-alojamiento" class="flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative">ALOJAMIENTO</button>
-                    </div>
-
-                    <div id="loading-calendar" class="text-center text-xs text-emerald-600 font-bold hidden mb-2">
-                        <span class="animate-pulse">⏳ Sincronizando Calendario...</span>
-                    </div>
-
-                    <!-- Input Fechas -->
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
-                            <span>Selecciona tus Fechas</span> <span class="text-red-500">*</span>
-                        </label>
-                        <input id="date-range" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold text-center" placeholder="Toque aquí para seleccionar" readonly>
-                        
-                        <!-- LEYENDA VISUAL DEL CALENDARIO -->
-                        <div class="flex justify-center gap-4 mt-2 text-[10px] text-stone-500 font-medium">
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-3 h-3 rounded-full bg-gray-100 border border-gray-300"></span>
-                                <span>Ocupado</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-3 h-3 rounded-full bg-orange-400/60 border border-orange-400"></span>
-                                <span>Tentativo</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Huéspedes -->
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
-                                <span>Adultos (> 13 años)</span> <span class="text-red-500">*</span>
-                            </label>
-                            <input type="number" id="adults" min="1" max="25" value="1" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Niños (5-13 años)</label>
-                                <input type="number" id="kids-paid" min="0" max="25" value="0" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Niños (< 5 años)</label>
-                                <input type="number" id="kids-free" min="0" max="25" value="0" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-stone-800 font-bold" oninput="updateCalc()">
-                            </div>
-                        </div>
-                        <p id="capacity-warning" class="text-xs text-red-500 font-bold hidden flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i> Máximo 25 personas.</p>
-                    </div>
-
-                    <!-- Nombre -->
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
-                            <span>Tu Nombre Completo</span> <span class="text-red-500">*</span>
-                        </label>
-                        <input id="client-name" type="text" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-bold" placeholder="Para el registro">
-                    </div>
-
-                    <!-- Celular/WhatsApp -->
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1 flex justify-between">
-                            <span>Tu Celular / WhatsApp</span> <span class="text-red-500">*</span>
-                        </label>
-                        <input id="client-phone" type="tel" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-bold" placeholder="Ej: 300 123 4567">
-                    </div>
-
-                    <!-- Mascotas (SWITCH) -->
-                    <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-white rounded-full text-emerald-700"><i data-lucide="paw-print" class="w-4 h-4"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-emerald-900">¿Llevas Mascota?</p>
-                                <p class="text-[10px] text-emerald-700">Somos Pet Friendly</p>
-                            </div>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="pets" class="sr-only peer">
-                            <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- COLUMNA DERECHA: RESULTADOS -->
-                <div class="lg:col-span-6 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-serif text-2xl text-emerald-950 mb-6 flex items-center gap-2">
-                            <i data-lucide="calculator" class="w-6 h-6"></i> Tu Cotización
-                        </h3>
-                        
-                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200 space-y-4">
-                            <div id="exclusivity-badge" class="hidden bg-gold-500/20 text-yellow-800 text-xs font-bold px-3 py-2 rounded-lg text-center border border-gold-500/30 mb-2">
-                                ✨ ¡Incluye Exclusividad de la Cabaña! ✨
-                            </div>
-                            
-                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
-                                <span class="text-stone-500">Plan:</span>
-                                <span class="font-bold text-emerald-800 uppercase" id="plan-type">ALOJAMIENTO</span>
-                            </div>
-                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
-                                <span class="text-stone-500">Duración:</span>
-                                <span class="font-bold" id="nights-count">0 Noches</span>
-                            </div>
-                            <div class="flex justify-between border-b border-stone-200 pb-2 text-sm">
-                                <span class="text-stone-500">Total Personas:</span>
-                                <span class="font-bold" id="pax-text">1 Adultos</span>
-                            </div>
-                            <div class="flex justify-between pt-2 items-end">
-                                <span class="text-stone-500 font-bold uppercase text-xs">Total Estimado*</span>
-                                <span class="font-black text-4xl text-emerald-900" id="total-price">$0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8">
-                        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-3 flex items-start gap-2">
-                            <i data-lucide="clock" class="w-4 h-4 text-emerald-600 mt-0.5 shrink-0"></i>
-                            <p class="text-[10px] text-emerald-800 leading-tight">
-                                <strong>Garantía de Espacio:</strong> Al presionar el botón, el sistema bloqueará las fechas por 1 hora para asegurar tu cupo mientras confirmas el pago.
-                            </p>
-                        </div>
-                        
-                        <button onclick="submitReservation()" id="btn-submit" class="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold shadow-xl hover:bg-[#128C7E] transition-all flex justify-center gap-3 items-center transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <!-- Logo Oficial WhatsApp SVG -->
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                            <span class="text-lg">Confirmar disponibilidad en WhatsApp</span>
-                        </button>
-                        <p class="text-center text-[10px] text-stone-400 mt-3">* Los campos marcados son obligatorios para cotizar.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="booking-nav" id="booking-nav">
+          <button class="btn-back" id="btn-back" onclick="prevStep()">
+            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Atrás
+          </button>
+          <button class="btn-next" id="btn-next" onclick="nextStep()">
+            Continuar
+            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
         </div>
-    </section>
+      </div>
 
-    <!-- NUEVA SECCIÓN: CONTACTO DIRECTO -->
-    <section class="py-20 bg-stone-50 border-t border-stone-200">
-        <div class="max-w-3xl mx-auto px-6 text-center">
-            <div class="inline-flex items-center justify-center p-4 bg-emerald-100 rounded-full text-emerald-800 mb-6">
-                <i data-lucide="headset" class="w-8 h-8"></i>
-            </div>
-            <h2 class="font-serif text-3xl text-emerald-950 mb-4">¿Prefieres que te guiemos paso a paso?</h2>
-            <p class="text-stone-500 mb-8 leading-relaxed">
-                Si no deseas armar el plan tú mismo o tienes dudas específicas, nuestro equipo está listo para atenderte personalmente.
-            </p>
-            
-            <a href="https://wa.me/573000000000" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white px-8 py-4 rounded-full font-bold hover:bg-green-700 transition-all shadow-xl animate-breathe">
-                <!-- Logo Oficial WhatsApp SVG -->
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                Hablar con un asesor
-            </a>
+      <p class="no-plan-msg" id="no-plan-msg">Selecciona un plan para comenzar tu reserva</p>
+    </div>
+  </section>
+
+  <!-- UBICACION -->
+  <section class="ubicacion-section" id="ubicacion">
+    <div class="ubicacion-inner">
+      <div class="ubicacion-map">
+        <div class="ubicacion-map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31351.49479389279!2d-74.76451559999999!3d10.809461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef42d63e9e1c3b1%3A0xe5f8e5b5e5e5e5e5!2sSabanagrande%2C%20Atl%C3%A1ntico!5e0!3m2!1ses!2sco!4v1620000000000!5m2!1ses!2sco" allowfullscreen loading="lazy"></iframe>
+          <div class="ubicacion-map-pin">
+            <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
         </div>
-    </section>
+      </div>
+      <div class="ubicacion-text">
+        <span>Ubicación Privilegiada</span>
+        <h2 class="font-serif">Fácil de llegar,<br>difícil de olvidar</h2>
+        <p>Estamos ubicados en Sabanagrande, Atlántico, a solo 15 minutos del aeropuerto y con vías de acceso pavimentadas hasta la entrada.</p>
+        <a href="https://maps.app.goo.gl/N959x7dAkn9LVDTq5" target="_blank" class="btn-como-llegar">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+    </div>
+  </section>
 
-    <!-- 6. UBICACIÓN -->
-    <section id="ubicacion" class="py-24 bg-stone-100 relative">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div class="order-2 md:order-1">
-                <div class="w-full h-[400px] bg-stone-300 rounded-2xl overflow-hidden relative shadow-lg group">
-                    <iframe 
-                        src="https://maps.google.com/maps?q=Cabaña+Los+Pelaitos+Sabanagrande&output=embed" 
-                        width="100%" height="100%" 
-                        style="border:0; filter: grayscale(100%) invert(10%) contrast(80%);" 
-                        allowfullscreen="" loading="lazy" 
-                        class="opacity-80 group-hover:opacity-100 transition-opacity duration-500">
-                    </iframe>
-                </div>
-            </div>
-
-            <div class="order-1 md:order-2">
-                <span class="text-emerald-900/60 uppercase tracking-widest text-xs font-bold mb-4 block">Ubicación Privilegiada</span>
-                <h2 class="font-serif text-4xl md:text-5xl text-emerald-950 mb-6">Fácil de llegar</h2>
-                <p class="text-stone-500 text-lg font-light mb-8 leading-relaxed">
-                    Estamos ubicados en Sabanagrande, Atlántico. La escapada perfecta cerca de la ciudad.
-                </p>
-                <a href="https://maps.app.goo.gl/N959x7dAkn9LVDTq5" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-emerald-950 text-white px-8 py-4 uppercase tracking-widest text-xs font-bold hover:bg-emerald-900 transition-all shadow-xl group">
-                    <i data-lucide="map" class="w-4 h-4 group-hover:animate-bounce"></i>
-                    Cómo llegar
-                </a>
-            </div>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h4 class="font-serif">Cabaña Los Pelaitos</h4>
+        <p>Un refugio exclusivo diseñado para desconectar de la rutina y reconectar con lo esencial. Sabanagrande, Atlántico.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Explorar</h4>
+        <ul>
+          <li><button onclick="scrollToSection('experiencia')">La Cabaña</button></li>
+          <li><button onclick="scrollToSection('experiencia')">Galería</button></li>
+          <li><button onclick="scrollToSection('comodidades')">Servicios</button></li>
+          <li><button onclick="scrollToSection('ubicacion')">Ubicación</button></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Social</h4>
+        <div class="footer-social">
+          <a href="https://instagram.com/cabanalospelaitos" target="_blank">
+            <svg class="icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="https://facebook.com/cabanalospelaitos" target="_blank">
+            <svg class="icon" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://wa.me/573001234567" target="_blank">
+            <svg class="icon" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
         </div>
-    </section>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Cabaña Los Pelaitos.</p>
+      <p>Diseño y Desarrollo Exclusivo</p>
+    </div>
+  </footer>
 
-    <!-- FOOTER -->
-    <footer class="bg-emerald-950 text-stone-400 py-12 text-sm text-center border-t border-stone-800">
-        <div class="max-w-4xl mx-auto mb-4">
-            <h4 class="font-serif text-white text-lg">Cabaña Los Pelaitos</h4>
-            <p class="text-xs">Sabanagrande, Atlántico</p>
-        </div>
-        <p class="text-[10px] opacity-50">© 2023 Todos los derechos reservados.</p>
-    </footer>
+  <script>
+    // === STATE ===
+    let bookingType = null;
+    let currentStep = 1;
+    let guests = 2;
+    let startDate = null;
+    let endDate = null;
+    let currentMonth = new Date();
+    const PRICE_PASS = 50000;
+    const PRICE_STAY = 70000;
+    const MIN_GUESTS = 1;
+    const MAX_GUESTS = 16;
+    const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const today = new Date(); today.setHours(0,0,0,0);
+    let currentSlide = 0;
+    let slideInterval;
 
-    <!-- SCRIPTS -->
-    <script>
-        lucide.createIcons();
+    // === NAV SCROLL ===
+    window.addEventListener('scroll', function() {
+      const nav = document.getElementById('navbar');
+      const logo = document.getElementById('logo');
+      const links = document.getElementById('nav-links');
+      const btn = document.getElementById('mobile-menu-btn');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+        document.getElementById('logo-roof').setAttribute('stroke', '#022c22');
+        document.getElementById('logo-roof-fill').setAttribute('fill', '#022c22');
+        document.getElementById('logo-door').setAttribute('fill', '#fafaf9');
+        document.getElementById('logo-text').setAttribute('fill', '#022c22');
+        document.getElementById('logo-subtext').setAttribute('fill', '#065f46');
+        links.querySelectorAll('button').forEach(b => { b.style.color = '#292524'; });
+        btn.style.color = '#1c1917';
+      } else {
+        nav.classList.remove('scrolled');
+        document.getElementById('logo-roof').setAttribute('stroke', 'white');
+        document.getElementById('logo-roof-fill').setAttribute('fill', 'white');
+        document.getElementById('logo-door').setAttribute('fill', '#022c22');
+        document.getElementById('logo-text').setAttribute('fill', 'white');
+        document.getElementById('logo-subtext').setAttribute('fill', '#d1fae5');
+        links.querySelectorAll('button').forEach(b => { b.style.color = 'white'; });
+        btn.style.color = 'white';
+      }
+    });
 
-        // VARIABLES GLOBALES
-        let blockedDates = [];
-        let tentativeDates = [];
-        let datePicker;
-        let currentPlan = 'alojamiento';
+    function scrollToTop(e) { e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); }
+    function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+    function openMobileMenu() { document.getElementById('mobile-menu').classList.add('open'); }
+    function closeMobileMenu() { document.getElementById('mobile-menu').classList.remove('open'); }
 
-        // CONFIGURACIÓN DE PRECIOS
-        const PRICES = {
-            pasadia: { adult: 50000, kid: 40000 },
-            alojamiento: { adult: 70000, kid: 40000 }
-        };
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf2TMitUkp0ItpWMFRHx6FEYCXxEsa5fSF19TJ-qRp48uvgUY8xXiJk_XktOayDndMnw/exec";
-        const formatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+    // === GALLERY ===
+    function goToSlide(index) {
+      currentSlide = index;
+      document.querySelectorAll('.gallery-slide').forEach((s,i) => s.classList.toggle('active', i===index));
+      document.querySelectorAll('.gallery-dot').forEach((d,i) => d.classList.toggle('active', i===index));
+    }
+    function startGallery() {
+      slideInterval = setInterval(() => { goToSlide((currentSlide+1)%4); }, 5000);
+    }
+    startGallery();
 
-        // 1. CONTROLADOR DEL SWITCH
-        function setPlanType(type) {
-            currentPlan = type;
-            const btnPasadia = document.getElementById('btn-pasadia');
-            const btnAlojamiento = document.getElementById('btn-alojamiento');
+    // === AMENITIES ===
+    function toggleAmenities() {
+      const el = document.getElementById('extra-amenities');
+      const btn = document.getElementById('btn-ver-mas');
+      el.classList.toggle('show');
+      btn.textContent = el.classList.contains('show') ? 'Ver menos' : 'Ver lista completa';
+    }
 
-            if (type === 'pasadia') {
-                btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
-                btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
-                // Pasadía: Permitir un solo día
-                if(datePicker) {
-                    datePicker.set("mode", "single");
-                    datePicker.clear(); 
-                }
-            } else {
-                btnAlojamiento.className = "flex-1 py-3 rounded-lg text-sm font-bold text-white bg-emerald-900 shadow-md transition-all z-10 relative";
-                btnPasadia.className = "flex-1 py-3 rounded-lg text-sm font-bold text-stone-500 transition-all z-10 relative";
-                // Alojamiento: Rango de fechas
-                if(datePicker) {
-                    datePicker.set("mode", "range");
-                    datePicker.clear(); 
-                }
-            }
-            updateCalc();
+    // === BOOKING ===
+    function selectPlan(type) {
+      bookingType = type;
+      document.getElementById('card-pass').classList.toggle('selected', type==='pass');
+      document.getElementById('card-stay').classList.toggle('selected', type==='stay');
+      document.getElementById('booking-form').classList.add('show');
+      document.getElementById('no-plan-msg').style.display = 'none';
+      currentStep = 1;
+      startDate = null;
+      endDate = null;
+      updateStepUI();
+      renderCalendar();
+      document.getElementById('calendar-instruction').textContent = type==='pass' ? 'Selecciona el día de tu visita' : 'Selecciona fecha de llegada y salida';
+      setTimeout(() => { document.getElementById('booking-form').scrollIntoView({behavior:'smooth',block:'start'}); }, 100);
+    }
+
+    function changeGuests(delta) {
+      const newVal = guests + delta;
+      if (newVal >= MIN_GUESTS && newVal <= MAX_GUESTS) {
+        guests = newVal;
+        document.getElementById('guests-count').textContent = guests;
+      }
+      document.getElementById('btn-minus').disabled = guests <= MIN_GUESTS;
+      document.getElementById('btn-plus').disabled = guests >= MAX_GUESTS;
+    }
+
+    function updateStepUI() {
+      const titles = ['','Número de Invitados','Selecciona tu Fecha','Tus Datos de Contacto','Confirmar Reserva'];
+      document.getElementById('step-label').textContent = 'Paso ' + currentStep + ' de 4';
+      document.getElementById('step-title').textContent = titles[currentStep];
+      for (let i=1; i<=4; i++) {
+        document.getElementById('step-'+i).classList.toggle('active', i===currentStep);
+        const dot = document.getElementById('dot-'+i);
+        dot.classList.remove('active','completed');
+        if (i===currentStep) dot.classList.add('active');
+        else if (i<currentStep) dot.classList.add('completed');
+      }
+      document.getElementById('step-success').classList.remove('active');
+      document.getElementById('btn-back').classList.toggle('show', currentStep>1);
+      document.getElementById('booking-nav').style.display = 'flex';
+      if (currentStep===4) {
+        document.getElementById('btn-next').innerHTML = 'Solicitar Pre-reserva';
+        updateConfirmation();
+      } else {
+        document.getElementById('btn-next').innerHTML = 'Continuar <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>';
+      }
+      updateNextBtn();
+    }
+
+    function updateNextBtn() {
+      let canProceed = true;
+      if (currentStep===2) {
+        canProceed = bookingType==='pass' ? startDate!==null : (startDate!==null && endDate!==null);
+      } else if (currentStep===4) {
+        canProceed = document.getElementById('check-policies').checked && document.getElementById('check-contact').checked;
+      }
+      document.getElementById('btn-next').disabled = !canProceed;
+    }
+
+    function nextStep() {
+      if (currentStep===3 && !validateForm()) return;
+      if (currentStep===4) { submitBooking(); return; }
+      currentStep++;
+      updateStepUI();
+    }
+
+    function prevStep() {
+      if (currentStep>1) { currentStep--; updateStepUI(); }
+    }
+
+    function validateForm() {
+      let valid = true;
+      const fn = document.getElementById('input-firstname').value.trim();
+      const ln = document.getElementById('input-lastname').value.trim();
+      const ph = document.getElementById('input-phone').value.trim();
+      const em = document.getElementById('input-email').value.trim();
+      document.querySelectorAll('.form-error').forEach(e => e.textContent = '');
+      document.querySelectorAll('.contact-step input').forEach(i => i.classList.remove('error'));
+      if (fn.length < 2) { document.getElementById('error-firstname').textContent = 'Mínimo 2 caracteres'; document.getElementById('input-firstname').classList.add('error'); valid = false; }
+      if (ln.length < 2) { document.getElementById('error-lastname').textContent = 'Mínimo 2 caracteres'; document.getElementById('input-lastname').classList.add('error'); valid = false; }
+      if (ph.length !== 10) { document.getElementById('error-phone').textContent = 'Debe tener exactamente 10 dígitos'; document.getElementById('input-phone').classList.add('error'); valid = false; }
+      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { document.getElementById('error-email').textContent = 'Formato de correo inválido'; document.getElementById('input-email').classList.add('error'); valid = false; }
+      return valid;
+    }
+
+    function updateConfirmation() {
+      document.getElementById('confirm-type').textContent = bookingType==='pass' ? 'Pasadía' : 'Estadía Completa';
+      document.getElementById('confirm-guests').textContent = guests;
+      document.getElementById('confirm-dates-label').textContent = bookingType==='pass' ? 'Fecha' : 'Fechas';
+      let dateStr = startDate ? formatDate(startDate) : '—';
+      if (endDate) dateStr += ' - ' + formatDate(endDate);
+      document.getElementById('confirm-dates').textContent = dateStr;
+      if (bookingType==='stay' && endDate) {
+        document.getElementById('confirm-nights-row').style.display = 'flex';
+        document.getElementById('confirm-nights').textContent = calculateNights();
+      } else {
+        document.getElementById('confirm-nights-row').style.display = 'none';
+      }
+      const fn = document.getElementById('input-firstname').value.trim();
+      const ln = document.getElementById('input-lastname').value.trim();
+      document.getElementById('confirm-contact').textContent = fn + ' ' + ln;
+      document.getElementById('confirm-total').textContent = formatCurrency(calculateTotal());
+    }
+
+    function submitBooking() {
+      document.getElementById('btn-next').innerHTML = '<svg class="icon-sm animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Procesando...';
+      document.getElementById('btn-next').disabled = true;
+      setTimeout(() => {
+        for (let i=1; i<=4; i++) document.getElementById('step-'+i).classList.remove('active');
+        document.getElementById('step-success').classList.add('active');
+        document.getElementById('booking-nav').style.display = 'none';
+        for (let i=1; i<=4; i++) { document.getElementById('dot-'+i).classList.remove('active'); document.getElementById('dot-'+i).classList.add('completed'); }
+      }, 2000);
+    }
+
+    function resetBooking() {
+      bookingType = null;
+      currentStep = 1;
+      guests = 2;
+      startDate = null;
+      endDate = null;
+      document.getElementById('guests-count').textContent = '2';
+      document.getElementById('input-firstname').value = '';
+      document.getElementById('input-lastname').value = '';
+      document.getElementById('input-phone').value = '';
+      document.getElementById('input-email').value = '';
+      document.getElementById('check-policies').checked = false;
+      document.getElementById('check-contact').checked = false;
+      document.getElementById('card-pass').classList.remove('selected');
+      document.getElementById('card-stay').classList.remove('selected');
+      document.getElementById('booking-form').classList.remove('show');
+      document.getElementById('no-plan-msg').style.display = 'block';
+      document.getElementById('step-success').classList.remove('active');
+      scrollToSection('reservar');
+    }
+
+    // === CALENDAR ===
+    function renderCalendar() {
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      document.getElementById('calendar-month-year').textContent = monthNames[month] + ' ' + year;
+      const isCurrentMonth = year===today.getFullYear() && month===today.getMonth();
+      document.getElementById('btn-prev-month').disabled = isCurrentMonth;
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      let html = '';
+      for (let i=0; i<firstDay; i++) html += '<button class="calendar-day" disabled></button>';
+      for (let d=1; d<=daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const isPast = date < today;
+        const isStart = startDate && date.getTime()===startDate.getTime();
+        const isEnd = endDate && date.getTime()===endDate.getTime();
+        const inRange = startDate && endDate && date>startDate && date<endDate;
+        let cls = 'calendar-day';
+        if (isStart || isEnd) cls += ' selected';
+        else if (inRange) cls += ' in-range';
+        html += '<button class="'+cls+'" '+(isPast?'disabled':'')+' onclick="selectDate('+year+','+month+','+d+')">'+d+'</button>';
+      }
+      document.getElementById('calendar-days').innerHTML = html;
+      updateDateSummary();
+    }
+
+    function changeMonth(delta) {
+      currentMonth.setMonth(currentMonth.getMonth()+delta);
+      renderCalendar();
+    }
+
+    function selectDate(year, month, day) {
+      const date = new Date(year, month, day);
+      if (bookingType==='pass') { startDate = date; endDate = null; }
+      else {
+        if (!startDate || (startDate && endDate) || date<startDate) { startDate = date; endDate = null; }
+        else { endDate = date; }
+      }
+      renderCalendar();
+      updateNextBtn();
+    }
+
+    function updateDateSummary() {
+      const summary = document.getElementById('date-summary');
+      if (startDate) {
+        summary.classList.add('show');
+        document.getElementById('start-date').textContent = formatDate(startDate);
+        if (bookingType==='stay') {
+          document.getElementById('start-label').textContent = 'Llegada';
+          document.getElementById('date-arrow').style.display = 'inline';
+          document.getElementById('end-col').style.display = 'block';
+          document.getElementById('end-date').textContent = endDate ? formatDate(endDate) : '—';
+          if (endDate) {
+            document.getElementById('nights-total').style.display = 'block';
+            document.getElementById('nights-total').textContent = calculateNights()+' noche'+(calculateNights()>1?'s':'')+' • '+formatCurrency(calculateTotal());
+          } else {
+            document.getElementById('nights-total').style.display = 'none';
+          }
+        } else {
+          document.getElementById('start-label').textContent = 'Fecha';
+          document.getElementById('date-arrow').style.display = 'none';
+          document.getElementById('end-col').style.display = 'none';
+          document.getElementById('nights-total').style.display = 'none';
         }
+      } else {
+        summary.classList.remove('show');
+      }
+    }
 
-        // 2. CALENDARIO
-        async function initCalendar() {
-            const loader = document.getElementById('loading-calendar');
-            loader.classList.remove('hidden');
-            
-            try {
-                if (GOOGLE_SCRIPT_URL.startsWith("https")) {
-                    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getBlockedDates`);
-                    const data = await res.json();
-                    
-                    if (data.blocked || data.tentative) {
-                        blockedDates = data.blocked || [];
-                        tentativeDates = data.tentative || [];
-                    } else {
-                        blockedDates = Array.isArray(data) ? data : [];
-                    }
-                }
-            } catch (e) { console.error(e); }
-            
-            datePicker = flatpickr("#date-range", {
-                mode: "range",
-                minDate: "today",
-                dateFormat: "Y-m-d",
-                disable: [...blockedDates, ...tentativeDates], 
-                locale: "es",
-                onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const date = dayElem.dateObj.toISOString().split('T')[0];
-                    if (tentativeDates.includes(date)) {
-                        dayElem.classList.add('tentative');
-                        dayElem.title = "Reservado Tentativamente";
-                    }
-                },
-                onChange: () => updateCalc()
-            });
-            loader.classList.add('hidden');
-        }
+    function formatDate(date) {
+      const days = ['dom','lun','mar','mié','jue','vie','sáb'];
+      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      return days[date.getDay()]+', '+date.getDate()+' '+months[date.getMonth()];
+    }
 
-        // 3. CÁLCULO DE PRECIOS
-        function updateCalc() {
-            const adults = parseInt(document.getElementById('adults').value) || 0;
-            const kidsPaid = parseInt(document.getElementById('kids-paid').value) || 0;
-            const kidsFree = parseInt(document.getElementById('kids-free').value) || 0;
-            
-            const totalPax = adults + kidsPaid + kidsFree;
-            const payingPax = adults + kidsPaid;
+    function formatCurrency(amount) {
+      return '$' + amount.toLocaleString('es-CO') + ' COP';
+    }
 
-            const warning = document.getElementById('capacity-warning');
-            const submitBtn = document.getElementById('btn-submit');
-            if (totalPax > 25) {
-                warning.classList.remove('hidden');
-                submitBtn.disabled = true;
-            } else {
-                warning.classList.add('hidden');
-                submitBtn.disabled = false;
-            }
+    function calculateNights() {
+      if (!startDate || !endDate) return 0;
+      return Math.ceil((endDate-startDate)/(1000*60*60*24));
+    }
 
-            const badge = document.getElementById('exclusivity-badge');
-            if (totalPax >= 15) badge.classList.remove('hidden');
-            else badge.classList.add('hidden');
+    function calculateTotal() {
+      if (bookingType==='pass') return PRICE_PASS * guests;
+      return PRICE_STAY * guests * calculateNights();
+    }
 
-            const dates = datePicker ? datePicker.selectedDates : [];
-            let duration = 0;
-            let durationText = "";
+    // === FORM EVENTS ===
+    document.getElementById('input-phone').addEventListener('input', function(e) {
+      this.value = this.value.replace(/\D/g, '').slice(0,10);
+    });
+    document.getElementById('check-policies').addEventListener('change', updateNextBtn);
+    document.getElementById('check-contact').addEventListener('change', updateNextBtn);
 
-            if (dates.length > 0) {
-                if (currentPlan === 'alojamiento') {
-                    if (dates.length === 2) {
-                        const diff = Math.abs(dates[1] - dates[0]);
-                        duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
-                    }
-                    if (duration === 0 && dates.length === 1) duration = 1;
-                } else {
-                    // Pasadía (single mode)
-                    duration = 1;
-                }
-            }
-
-            durationText = currentPlan === 'alojamiento' ? `${duration} Noche${duration !== 1 ? 's' : ''}` : `${duration} Día${duration !== 1 ? 's' : ''}`;
-
-            let total = 0;
-            const prices = PRICES[currentPlan];
-            
-            if (currentPlan === 'alojamiento') {
-                const nightly = (adults * prices.adult) + (kidsPaid * prices.kid);
-                total = nightly * duration;
-            } else {
-                const daily = (adults * prices.adult) + (kidsPaid * prices.kid);
-                total = daily * duration; 
-            }
-
-            document.getElementById('plan-type').innerText = currentPlan.toUpperCase();
-            document.getElementById('nights-count').innerText = duration > 0 ? durationText : "--";
-            
-            let paxString = `${adults} Adultos`;
-            if (kidsPaid > 0) paxString += ` y ${kidsPaid} Niños`;
-            if (kidsFree > 0) paxString += ` (+${kidsFree} Bebés)`;
-            document.getElementById('pax-text').innerText = paxString;
-
-            document.getElementById('total-price').innerText = formatter.format(total);
-        }
-
-        // 4. ENVIAR FORMULARIO & BLOQUEAR VISUALMENTE
-        function submitReservation() {
-            const name = document.getElementById('client-name').value.trim();
-            const phone = document.getElementById('client-phone').value.trim();
-            
-            const datesObj = datePicker.selectedDates;
-            if (!name || datesObj.length === 0 || !document.getElementById('adults').value || !phone) {
-                alert("⚠️ Por favor completa los campos obligatorios:\n- Fechas\n- Mínimo 1 Adulto\n- Nombre Completo\n- Celular/WhatsApp");
-                return;
-            }
-
-            let start = new Date(datesObj[0]);
-            let end = datesObj.length > 1 ? new Date(datesObj[1]) : new Date(start);
-            
-            let tempDates = [];
-            let loopDate = new Date(start);
-            
-            if (currentPlan === 'pasadia') {
-                tempDates.push(loopDate.toISOString().split('T')[0]);
-            } else {
-                 while (loopDate < end) {
-                     tempDates.push(loopDate.toISOString().split('T')[0]);
-                     loopDate.setDate(loopDate.getDate() + 1);
-                 }
-                 if (tempDates.length === 0) tempDates.push(start.toISOString().split('T')[0]);
-            }
-
-            tentativeDates = [...tentativeDates, ...tempDates];
-            datePicker.set('disable', [...blockedDates, ...tentativeDates]);
-            datePicker.redraw();
-
-            const toLocalISOString = (date) => {
-                const offset = date.getTimezoneOffset();
-                const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
-                return adjustedDate.toISOString().split('T')[0];
-            };
-
-            const adults = document.getElementById('adults').value;
-            const kidsPaid = document.getElementById('kids-paid').value;
-            const kidsFree = document.getElementById('kids-free').value;
-            const hasPet = document.getElementById('pets').checked ? "Sí" : "No";
-            const total = document.getElementById('total-price').innerText;
-            const plan = document.getElementById('plan-type').innerText;
-            const duration = document.getElementById('nights-count').innerText;
-            const datesStr = document.getElementById('date-range').value; 
-
-            const btn = document.getElementById('btn-submit');
-            btn.innerHTML = "Procesando...";
-            btn.disabled = true;
-
-            const formData = {
-                client: name,
-                phone: phone,
-                checkIn: toLocalISOString(datesObj[0]),
-                checkOut: datesObj.length > 1 ? toLocalISOString(datesObj[1]) : toLocalISOString(datesObj[0]),
-                pax: parseInt(adults) + parseInt(kidsPaid) + parseInt(kidsFree),
-                plan: plan,
-                total: total
-            };
-
-            if (GOOGLE_SCRIPT_URL.startsWith("https")) {
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-            }
-
-            setTimeout(() => {
-                let msg = `Hola Cabaña Los Pelaitos! 🌴\nSoy *${name}* (${phone}) y quiero reservar:\n\n`; 
-                msg += `🎟️ Plan: *${plan}*\n`;
-                msg += `📅 Fechas: ${datesStr} (${duration})\n`;
-                msg += `👥 Grupo: ${document.getElementById('pax-text').innerText}\n`;
-                msg += `🐶 Mascota: ${hasPet}\n`;
-                msg += `💰 Valor Estimado: *${total}*\n\n`;
-                msg += `¿Me confirman disponibilidad para realizar el abono?`;
-
-                window.open(`https://wa.me/573000000000?text=${encodeURIComponent(msg)}`, '_blank');
-                
-                btn.innerHTML = `
-                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                            <span class="text-lg">Confirmar disponibilidad en WhatsApp</span>
-                        `;
-                btn.disabled = false;
-            }, 1000);
-        }
-
-        // Listeners
-        initCalendar();
-        updateCalc();
-        
-        function toggleAmenities() {
-            const extra = document.getElementById('amenities-extra');
-            const btn = document.getElementById('btn-ver-mas');
-            if (extra.classList.contains('hidden')) { extra.classList.remove('hidden'); btn.innerText = "Ver menos"; } 
-            else { extra.classList.add('hidden'); btn.innerText = "Ver lista completa"; }
-        }
-
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuBtn = document.getElementById('menu-btn');
-        const closeMenuBtn = document.getElementById('close-menu-btn');
-        const menuOverlay = document.getElementById('menu-overlay');
-
-        if (menuBtn) {
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.remove('-translate-x-full');
-                menuOverlay.classList.remove('hidden');
-            });
-        }
-        
-        function closeMenu() { 
-            mobileMenu.classList.add('-translate-x-full'); 
-            menuOverlay.classList.add('hidden');
-        }
-
-        if (closeMenuBtn) {
-            closeMenuBtn.addEventListener('click', closeMenu);
-        }
-
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) { nav.classList.add('bg-emerald-950', 'shadow-lg'); nav.classList.remove('bg-transparent'); } 
-            else { nav.classList.remove('bg-emerald-950', 'shadow-lg'); nav.classList.add('bg-transparent'); }
-        });
-    </script>
+    // === INIT ===
+    (function init() {
+      changeGuests(0);
+      renderCalendar();
+      // Populate birthday selects
+      const daySelect = document.getElementById('select-day');
+      for (let i=1; i<=31; i++) daySelect.innerHTML += '<option value="'+i+'">'+i+'</option>';
+      const monthSelect = document.getElementById('select-month');
+      monthNames.forEach((m,i) => monthSelect.innerHTML += '<option value="'+(i+1)+'">'+m.slice(0,3)+'</option>');
+      const yearSelect = document.getElementById('select-year');
+      const currentYear = new Date().getFullYear();
+      for (let i=0; i<80; i++) yearSelect.innerHTML += '<option value="'+(currentYear-i-10)+'">'+(currentYear-i-10)+'</option>';
+    })();
+  </script>
 </body>
 </html>
