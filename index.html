@@ -1055,14 +1055,55 @@
     }
 
     function submitBooking() {
-      document.getElementById('btn-next').innerHTML = '<svg class="icon-sm animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Procesando...';
-      document.getElementById('btn-next').disabled = true;
-      setTimeout(() => {
-        for (let i=1; i<=4; i++) document.getElementById('step-'+i).classList.remove('active');
-        document.getElementById('step-success').classList.add('active');
-        document.getElementById('booking-nav').style.display = 'none';
-        for (let i=1; i<=4; i++) { document.getElementById('dot-'+i).classList.remove('active'); document.getElementById('dot-'+i).classList.add('completed'); }
-      }, 2000);
+      // 1. Efecto visual de carga
+      const btn = document.getElementById('btn-next');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<svg class="icon-sm animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Enviando...';
+      btn.disabled = true;
+
+      // 2. Preparar datos
+      const formattedStart = startDate ? startDate.toISOString().split('T')[0] : '';
+      const formattedEnd = endDate ? endDate.toISOString().split('T')[0] : formattedStart;
+
+      const bookingData = {
+        nombre: document.getElementById('input-firstname').value.trim(),
+        apellido: document.getElementById('input-lastname').value.trim(),
+        telefono: document.getElementById('input-phone').value.trim(),
+        email: document.getElementById('input-email').value.trim(),
+        plan: bookingType, 
+        personas: guests,
+        llegada: formattedStart,
+        salida: formattedEnd,
+        total: formatCurrency(calculateTotal())
+      };
+
+      // 3. Enviar a Google (YA TIENE TU URL CORRECTA)
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxHxUJrGQuF9Xwdt35XaXDPV2_cTREdWTSqHTw4Rk1JIVQCyFvf0ORYDTnjdprsTz9Avg/exec';
+
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData)
+      })
+      .then(() => {
+        // 4. Éxito
+        setTimeout(() => {
+          for (let i=1; i<=4; i++) document.getElementById('step-'+i).classList.remove('active');
+          document.getElementById('step-success').classList.add('active');
+          document.getElementById('booking-nav').style.display = 'none';
+          for (let i=1; i<=4; i++) { 
+            document.getElementById('dot-'+i).classList.remove('active'); 
+            document.getElementById('dot-'+i).classList.add('completed'); 
+          }
+        }, 1000);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al conectar. Por favor escríbenos al WhatsApp.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      });
     }
 
     function resetBooking() {
