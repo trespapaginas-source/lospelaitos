@@ -702,18 +702,23 @@
         <p>Recorre la propiedad desde tu dispositivo antes de llegar. Descubre la amplitud de nuestros espacios sociales y la privacidad de nuestras habitaciones.</p>
       </div>
       
-      <!-- CONTENEDOR DEL TOUR (Con el formato ajustado en CSS) -->
+      <!-- CONTENEDOR DEL TOUR -->
       <div class="tour-preview">
         <iframe 
           src="https://tour.panoee.net/6968336a21ea03081285d865" 
           width="100%" 
           height="100%" 
           style="border:0;" 
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen="" 
-          loading="lazy" 
-          referrerpolicy="no-referrer-when-downgrade">
+          loading="lazy"
+          referrerpolicy="no-referrer"> <!-- 👈 ESTE ES EL TRUCO: Oculta tu dominio a Panoee -->
         </iframe>
       </div>
+      
+    </div>
+    <div class="tour-gradient"></div>
+  </section>
       
     </div>
     <div class="tour-gradient"></div>
